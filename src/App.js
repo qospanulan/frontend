@@ -1,24 +1,83 @@
-import logo from './logo.svg';
-import './App.css';
+import { useContext, useState, useEffect } from "react";
+import { ColorModeContext, useMode } from "./theme";
+import { UserContext, UserProvider } from "./user";
+import { CssBaseline, ThemeProvider } from "@mui/material";
+import { ToastContainer, toast } from "react-toastify";
+import { Routes, Route, Navigate } from "react-router-dom";
+import Topbar from "./scenes/global/Topbar";
+import Sidebar from "./scenes/global/Sidebar";
+import LoginForm from "./scenes/global/Login";
+import LogoutForm from "./scenes/global/Logout";
+
+import Dashboard from "./scenes/dashboard";
+import Carriers from "./scenes/carriers/carrierList";
+import CreateCarrier from "./scenes/carriers/createCarrier";
+import Orders from "./scenes/orders/orderList";
+import CreateOrders from "./scenes/orders/createOrder";
+import Form from "./scenes/form";
+import CreateBnumberGroup from "./scenes/orders/createBnumberGroup";
+import TCG from "./scenes/tcg";
 
 function App() {
+  const [theme, colorMode] = useMode();
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      setUser(JSON.parse(localStorage.getItem("user")));
+    };
+
+    fetchUser();
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <ColorModeContext.Provider value={colorMode}>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <div className="app">
+            {!user && (
+              <Routes>
+                <Route path="/login" element={<LoginForm />} />
+                <Route path="/logout" element={<LogoutForm />} />
+                <Route path="*" element={<Navigate to="/login" replace />} />
+              </Routes>
+            )}
+            {user && (
+              <>
+                <Sidebar />
+                <main className="content">
+                  <Topbar />
+                  <Routes>
+                    {/* <Route path="/" element={<Dashboard />} /> */}
+                    <Route path="/dashboard" element={<Dashboard />} />
+                    <Route
+                      path="/login"
+                      element={!user ? <LoginForm /> : <Navigate to={"/"} />}
+                    />
+                    <Route path="/logout" element={<LogoutForm />} />
+                    <Route path="/" element={<TCG />} />
+                    <Route path="/received-calls" element={<TCG />} />
+                    <Route path="/carriers" element={<Carriers />} />
+                    <Route path="/carriers/new" element={<CreateCarrier />} />
+                    <Route path="/orders" element={<Orders />} />
+                    <Route path="/orders/new" element={<CreateOrders />} />
+                    <Route
+                      path="/orders/new-bnumber-group"
+                      element={<CreateBnumberGroup />}
+                    />
+                    <Route
+                      path="*"
+                      element={<Navigate to="/received-calls" replace />}
+                    />
+                  </Routes>
+                </main>
+              </>
+            )}
+          </div>
+        </ThemeProvider>
+      </ColorModeContext.Provider>
+    </>
   );
 }
 
