@@ -46,7 +46,7 @@ const CreateBnumberGroup = () => {
     formData.append("file", selectedFile);
     formData.append("name", values.name);
 
-    await createBnumberGroupApi(formData, token);
+    await createBnumberGroupApi(formData);
   };
 
   const handleFormChange = (event) => {

@@ -22,13 +22,13 @@ export const getBnumberGroupsApi = async (token) => {
 };
 
 // Dont work
-export const createBnumberGroupApi = async (newBnumberGroup, token) => {
+export const createBnumberGroupApi = async (newBnumberGroup) => {
   try {
     const response = await fetch(`${BASE_URL}/bnumber-groups/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        // Authorization: `Bearer ${token}`,
       },
       // body: JSON.stringify(newBnumberGroup),
       body: newBnumberGroup,
