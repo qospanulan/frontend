@@ -26,10 +26,10 @@ export const createBnumberGroupApi = async (newBnumberGroup) => {
   try {
     const response = await fetch(`${BASE_URL}/bnumber-groups/`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        // Authorization: `Bearer ${token}`,
-      },
+      // headers: {
+      // "Content-Type": "application/json",
+      // Authorization: `Bearer ${token}`,
+      // },
       // body: JSON.stringify(newBnumberGroup),
       body: newBnumberGroup,
     });

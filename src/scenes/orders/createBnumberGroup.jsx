@@ -47,6 +47,9 @@ const CreateBnumberGroup = () => {
     formData.append("name", values.name);
 
     await createBnumberGroupApi(formData);
+    setSelectedFile(null);
+    values.name = "";
+    values.file = "";
   };
 
   const handleFormChange = (event) => {
@@ -101,7 +104,7 @@ const CreateBnumberGroup = () => {
                 label="Bnumber Group Name"
                 onBlur={handleBlur}
                 onChange={handleFormChange}
-                // value={values.file}
+                value={values.file}
                 name="file"
                 sx={{ gridColumn: "span 0" }}
               />
