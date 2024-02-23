@@ -51,6 +51,13 @@ const Carriers = () => {
       // headerAlign: "left",
       // align: "left",
     },
+    {
+      field: "numbers",
+      headerName: "Numbers",
+      flex: 1,
+      valueGetter: (params) =>
+        params.row.numbers.map((number_info) => ` ${number_info.number}`) || "",
+    },
   ];
 
   return (

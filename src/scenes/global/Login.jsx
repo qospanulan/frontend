@@ -1,5 +1,4 @@
 import React, { useState, useContext } from "react";
-// import { UserContext } from "../../user.js";
 
 import { Box, Button, TextField } from "@mui/material";
 import { Formik, Form, FieldArray } from "formik";
@@ -9,7 +8,6 @@ import Header from "../../components/Header";
 
 import { getTokenApi } from "../../state/api/users/signIn";
 import { useLogin } from "../../hooks/useLogin";
-// import { onChange } from "react-toastify/dist/core/store";
 
 // =====================
 import { IconButton, useTheme, Typography } from "@mui/material";
@@ -17,38 +15,27 @@ import { useMemo, useEffect } from "react";
 import { ColorModeContext, tokens } from "../../theme";
 import { Link, useNavigate } from "react-router-dom";
 
-// import { useContext } from "react";
-// import { UserContext } from "../../user";
-
-// import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Fade from "@mui/material/Fade";
-// import { InputBase } from "@mui/material";
 import InputBase from "@mui/material/InputBase";
 
-// import { LightModeOutlinedIcon } from "@mui/icons-material/LightModeOutlined";
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 
-// import { DarkModeOutlinedIcon } from "@mui/icons-material/DarkModeOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 
-// import { NotificationsOutlinedIcon } from "@mui/icons-material/NotificationsOutlined";
-import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
+// import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
 
-// import { SettingsOutlinedIcon } from "@mui/icons-material/SettingsOutlined";
-import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
+// import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 
-// import { PersonOutlinedIcon } from "@mui/icons-material/PersonOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 
-// import { SearchIcon } from "@mui/icons-material/Search";
-import SearchIcon from "@mui/icons-material/Search";
+// import SearchIcon from "@mui/icons-material/Search";
 import { getCurrentUser } from "../../state/api/users/signIn";
 
 const LoginForm = () => {
   const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
+  // const colors = tokens(theme.palette.mode);
   const colorMode = useContext(ColorModeContext);
 
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));

@@ -26,9 +26,10 @@ const Orders = () => {
 
   const columns = [
     {
-      field: "order_id",
-      headerName: "Order ID",
+      field: "order_name",
+      headerName: "Order Group",
       flex: 1,
+      valueGetter: (params) => params.row.order_group?.name || "",
     },
     {
       field: "country_name",

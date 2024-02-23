@@ -349,17 +349,6 @@ const CreateOrders = () => {
 
 export default CreateOrders;
 
-// const initialValues = {
-//   order_group_name: "",
-//   carrier_id: "",
-//   call_type_id: "",
-//   percentage_of_calls: "",
-//   answered_call_duration: "",
-//   action_on_fas: "",
-//   answer_audio_type: "",
-//   bnumber_group: "",
-// };
-
 const initialValues = {
   order_group_name: "",
   orders: [
@@ -370,7 +359,6 @@ const initialValues = {
       percentage_of_calls: "",
       answered_call_duration: "",
       action_on_fas: "",
-      // answer_audio_type: "",
       bnumber_group_id: "",
     },
   ],

@@ -1,5 +1,4 @@
-import { useContext, useState } from "react";
-// import { Sidebar as ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
+import { useState } from "react";
 import { ProSidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
 import "react-pro-sidebar/dist/css/styles.css";
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
@@ -12,17 +11,7 @@ import AddIcCallOutlinedIcon from "@mui/icons-material/AddIcCallOutlined";
 import ListAltIcon from "@mui/icons-material/ListAlt";
 import PlaylistAddCheckIcon from "@mui/icons-material/PlaylistAddCheck";
 import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
-import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
-import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
-import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
-import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
-import HelpOutlinedIcon from "@mui/icons-material/HelpOutlined";
-import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
-import PieChartOutlinedIcon from "@mui/icons-material/PieChartOutlined";
-import TimelineOutlinedIcon from "@mui/icons-material/TimelineOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
-import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
-// import { UserContext } from "../../user";
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
@@ -41,31 +30,13 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
   );
 };
 
-// const handleSubMenuClick = (
-//   submenuTitle,
-//   selected,
-//   setSelected
-//   // to,
-//   // navigate
-// ) => {
-//   if (selected === submenuTitle) {
-//     // If submenu is already selected, collapse it
-//     setSelected("Dashboard");
-//     // navigate(to);
-//   } else {
-//     setSelected(submenuTitle);
-//     // If submenu is not selected, open it and select the first item
-//     // navigate("/");
-//   }
-// };
-
 const Sidebar = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState("TCG");
   const navigate = useNavigate();
-  // const { token, setToken } = useContext(UserContext);
+
   return (
     <>
       <Box
@@ -106,7 +77,7 @@ const Sidebar = () => {
                   ml="15px"
                 >
                   <Typography variant="h4" color={colors.grey[100]}>
-                    CABINET
+                    GTC
                   </Typography>
                   <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
                     <MenuOutlinedIcon />
@@ -114,35 +85,6 @@ const Sidebar = () => {
                 </Box>
               )}
             </MenuItem>
-
-            {/* USER */}
-            {/* {!isCollapsed && (
-            <Box mb="25px">
-              <Box display="flex" justifyContent="center" alignItems="center">
-                <img
-                  alt="profile-user"
-                  width="100px"
-                  height="100px"
-                  src={`../../assets/user.png`}
-                  style={{ cursor: "pointer", borderRadius: "50%" }}
-                />
-              </Box>
-
-              <Box textAlign="center">
-                <Typography
-                  variant="h4"
-                  color={colors.grey[100]}
-                  fontWeight="bold"
-                  sx={{ m: "10px 0 0 0" }}
-                >
-                  Kospan Ulan
-                </Typography>
-                <Typography variant="h6" color={colors.greenAccent[500]}>
-                  Developer
-                </Typography>
-              </Box>
-            </Box>
-          )} */}
 
             {/* MENU ITEMS */}
             <Box paddingLeft={isCollapsed ? undefined : "10%"}>
@@ -154,17 +96,17 @@ const Sidebar = () => {
                 selected={selected}
                 setSelected={setSelected}
               />
-              <Typography
+              {/* <Typography
                 variant="h6"
                 color={colors.grey[300]}
                 sx={{ m: "15px 0 5px 20px" }}
               >
                 Main
-              </Typography>
+              </Typography> */}
 
               {/* Carriers */}
               <SubMenu
-                title="TCG Panel"
+                title="Reports"
                 style={{ color: colors.grey[100] }}
                 icon={<ContactsOutlinedIcon />}
               >
@@ -230,29 +172,21 @@ const Sidebar = () => {
                 />
 
                 <Item
-                  title="Create Bnumber Group"
-                  to="/orders/new-bnumber-group"
+                  title="Bnumber Group"
+                  to="/orders/bnumber-group"
                   icon={<PlaylistAddIcon />}
                   selected={selected}
                   setSelected={setSelected}
                 />
               </SubMenu>
 
-              {/* <Item
-              title="ProfileForm"
-              to="/form"
-              icon={<PersonOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            /> */}
-
-              <Typography
+              {/* <Typography
                 variant="h6"
                 color={colors.grey[300]}
                 sx={{ m: "15px 0 5px 20px" }}
               >
                 Charts
-              </Typography>
+              </Typography> */}
             </Box>
           </Menu>
         </ProSidebar>
