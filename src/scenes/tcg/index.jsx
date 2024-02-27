@@ -82,16 +82,19 @@ const TCG = () => {
       field: "received_timestamp",
       headerName: "Received Timestamp",
       flex: 1,
+      type: "dateTime",
     },
     {
       field: "exten_timestamp",
       headerName: "Exten Timestamp",
       flex: 1,
+      type: "dateTime",
     },
     {
       field: "timestamp",
       headerName: "Timestamp",
       flex: 1,
+      type: "dateTime",
     },
     {
       field: "fraud_type",

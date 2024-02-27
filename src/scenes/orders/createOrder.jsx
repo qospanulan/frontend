@@ -12,21 +12,24 @@ import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../components/Header";
 
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 import { createOrderApi } from "../../state/api/orders";
 
 import { getCarriersApi } from "../../state/api/carriers";
 import { getCountriesApi } from "../../state/api/countries";
 import { getCallTypesApi } from "../../state/api/callTypes";
 import { getBnumberGroupsApi } from "../../state/api/bnumberGroups";
-// import { useContext } from "react";
-// import { UserContext } from "../../user";
+
 const CreateOrders = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
-  // Carriers fetching
   const [carriers, setCarriers] = useState([{ id: "", country: "", name: "" }]);
-  // const { token, setToken } = useContext(UserContext);
-  const token = "d";
+  const [countries, setCountries] = useState([{ id: "", name: "" }]);
+  const [callTypes, setCallTypes] = useState([{ id: "", name: "" }]);
+  const [bnumberGroups, setBnumberGroups] = useState([{ id: "", name: "" }]);
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
 
   useEffect(() => {
     const fetchCarriers = async () => {
@@ -43,7 +46,6 @@ const CreateOrders = () => {
   }, []);
 
   // Countries fetching
-  const [countries, setCountries] = useState([{ id: "", name: "" }]);
   useEffect(() => {
     const fetchCountries = async () => {
       try {
@@ -59,7 +61,6 @@ const CreateOrders = () => {
   }, []);
 
   // Call types fetching
-  const [callTypes, setCallTypes] = useState([{ id: "", name: "" }]);
   useEffect(() => {
     const fetchCallTypes = async () => {
       try {
@@ -75,11 +76,10 @@ const CreateOrders = () => {
   }, []);
 
   // Bnumber groups fetching
-  const [bnumberGroups, setBnumberGroups] = useState([{ id: "", name: "" }]);
   useEffect(() => {
     const fetchBnumberGroups = async () => {
       try {
-        const bnumberGroups = await getBnumberGroupsApi(token);
+        const bnumberGroups = await getBnumberGroupsApi(user.token);
 
         setBnumberGroups(bnumberGroups);
       } catch (error) {
@@ -90,9 +90,19 @@ const CreateOrders = () => {
     fetchBnumberGroups();
   }, []);
 
-  const handleFormSubmit = async (values) => {
+  const handleFormSubmit = async (values, onSubmitProps) => {
     console.log(values);
-    await createOrderApi(values);
+    try {
+      const orders = await createOrderApi(values);
+      {
+        orders
+          ? toast.success("Orders created")
+          : toast.error("Orders creating error");
+      }
+      onSubmitProps.resetForm();
+    } catch (error) {
+      console.error("Error creating order groups:", error);
+    }
   };
 
   return (
@@ -168,8 +178,8 @@ const CreateOrders = () => {
                             name={`orders.${index}.country_id`}
                             // error={
                             //   touched.orders &&
-                            //   !!touched.orders[index].country_id &&
-                            //   !!errors.orders[index].country_id
+                            //   !!touched?.orders[index]?.country_id &&
+                            //   !!errors?.orders[index]?.country_id
                             // }
                             // helperText={
                             //   touched.orders &&
@@ -336,13 +346,19 @@ const CreateOrders = () => {
             </FieldArray>
 
             <Box display="flex" justifyContent="end" mt="20px">
-              <Button type="submit" color="secondary" variant="contained">
+              <Button
+                // disabled={!(isValid && dirty)}
+                type="submit"
+                color="secondary"
+                variant="contained"
+              >
                 Create All
               </Button>
             </Box>
           </Form>
         )}
       </Formik>
+      <ToastContainer />
     </Box>
   );
 };

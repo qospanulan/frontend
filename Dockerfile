@@ -10,4 +10,8 @@ RUN npm install
 
 EXPOSE 3000
 
-CMD ["npm", "start"]
+RUN npm run build
+
+FROM scratch
+
+COPY --from=build /react-front/build /usr/share/nginx/html

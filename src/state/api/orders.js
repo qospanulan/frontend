@@ -37,9 +37,10 @@ export const createOrderApi = async (newOrder) => {
     });
 
     if (!response1.ok) {
-      throw new Error(
-        "Network response was not ok:" + JSON.stringify(response1.statusText)
-      );
+      // throw new Error(
+      // "Network response was not ok:" + JSON.stringify(response1.statusText)
+      // );
+      return false;
     }
 
     let createdOrderGroup = await response1.json();
@@ -58,14 +59,16 @@ export const createOrderApi = async (newOrder) => {
     });
 
     if (!response2.ok) {
-      throw new Error(
-        "Network response was not ok:" + JSON.stringify(response2.statusText)
-      );
+      // throw new Error(
+      //   "Network response was not ok:" + JSON.stringify(response2.statusText)
+      // );
+      return false;
     }
 
     return await response2.json();
   } catch (error) {
     console.error("Error creating order:", error);
-    throw error;
+    // throw error;
+    return false;
   }
 };
