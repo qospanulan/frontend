@@ -2,7 +2,7 @@ const BASE_URL = process.env.REACT_APP_API_URL;
 
 export const getCurrentUser = async (token) => {
   try {
-    const response = await fetch(`${BASE_URL}/users/me`, {
+    const response = await fetch(`${BASE_URL}/users/me/`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -23,7 +23,7 @@ export const getCurrentUser = async (token) => {
 // export const getTokenApi = async (email, password) => {
 export const getTokenApi = async (formData) => {
   try {
-    const response = await fetch(`${BASE_URL}/auth/token`, {
+    const response = await fetch(`${BASE_URL}/auth/token/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",

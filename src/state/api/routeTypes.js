@@ -6,7 +6,7 @@ const BASE_URL = process.env.REACT_APP_API_URL;
 // const { email, token } = useContext(UserContext);
 export const getRouteTypesApi = async () => {
   try {
-    const response = await fetch(`${BASE_URL}/route-types`, {
+    const response = await fetch(`${BASE_URL}/route-types/`, {
       method: "GET",
       headers: {
         // Authorization: `Bearer ${token}`,
@@ -27,7 +27,7 @@ export const getRouteTypesApi = async () => {
 
 export const createRouteTypesApi = async (newRouteType) => {
   try {
-    const response = await fetch(`${BASE_URL}/route-types`, {
+    const response = await fetch(`${BASE_URL}/route-types/`, {
       method: "POST",
       headers: {
         // Authorization: `Bearer ${token}`,

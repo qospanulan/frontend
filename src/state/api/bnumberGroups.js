@@ -24,7 +24,7 @@ export const getBnumberGroupsApi = async (token) => {
 export const getBnumberGroupNumbersApi = async (token, id) => {
   try {
     const response = await fetch(
-      `${BASE_URL}/bnumber-groups/bnumbers?` +
+      `${BASE_URL}/bnumber-groups/bnumbers/?` +
         new URLSearchParams({
           bnumber_group_id: id,
         }).toString(),

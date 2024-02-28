@@ -6,7 +6,7 @@ const BASE_URL = process.env.REACT_APP_API_URL;
 // const {email, token} = useContext(UserContext)
 export const getCallTypesApi = async () => {
   try {
-    const response = await fetch(`${BASE_URL}/call-types`, {
+    const response = await fetch(`${BASE_URL}/call-types/`, {
       method: "GET",
       headers: {
         // Authorization: `Bearer ${token}`,
@@ -27,7 +27,7 @@ export const getCallTypesApi = async () => {
 
 export const createCallTypeApi = async (newCallType) => {
   try {
-    const response = await fetch(`${BASE_URL}/call-types`, {
+    const response = await fetch(`${BASE_URL}/call-types/`, {
       method: "POST",
       headers: {
         // Authorization: `Bearer ${token}`,

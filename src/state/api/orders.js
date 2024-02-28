@@ -6,7 +6,7 @@ const BASE_URL = process.env.REACT_APP_API_URL;
 // const {email, token} = useContext(UserContext)
 export const getOrdersApi = async () => {
   try {
-    const response = await fetch(`${BASE_URL}/orders`, {
+    const response = await fetch(`${BASE_URL}/orders/`, {
       method: "GET",
       headers: {
         // Authorization: `Bearer ${token}`,
@@ -27,7 +27,7 @@ export const getOrdersApi = async () => {
 
 export const createOrderApi = async (newOrder) => {
   try {
-    const response1 = await fetch(`${BASE_URL}/orders/group`, {
+    const response1 = await fetch(`${BASE_URL}/orders/group/`, {
       method: "POST",
       headers: {
         // Authorization: `Bearer ${token}`,
@@ -50,7 +50,7 @@ export const createOrderApi = async (newOrder) => {
 
     console.log(createdOrderGroup);
 
-    const response2 = await fetch(`${BASE_URL}/orders/all`, {
+    const response2 = await fetch(`${BASE_URL}/orders/all/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

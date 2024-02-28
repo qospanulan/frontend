@@ -6,7 +6,7 @@ const BASE_URL = process.env.REACT_APP_API_URL;
 // const {email, token} = useContext(UserContext)
 export const getNumbersApi = async () => {
   try {
-    const response = await fetch(`${BASE_URL}/numbers`, {
+    const response = await fetch(`${BASE_URL}/numbers/`, {
       method: "GET",
       headers: {
         // Authorization: `Bearer ${token}`,
@@ -27,7 +27,7 @@ export const getNumbersApi = async () => {
 
 export const createNumbersApi = async (newCarrierId, newNumbers) => {
   try {
-    const response = await fetch(`${BASE_URL}/numbers`, {
+    const response = await fetch(`${BASE_URL}/numbers/`, {
       method: "POST",
       headers: {
         // Authorization: `Bearer ${token}`,

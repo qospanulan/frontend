@@ -6,7 +6,7 @@ const BASE_URL = process.env.REACT_APP_API_URL;
 // const {email, token} = useContext(UserContext)
 export const getCountriesApi = async () => {
   try {
-    const response = await fetch(`${BASE_URL}/countries`, {
+    const response = await fetch(`${BASE_URL}/countries/`, {
       method: "GET",
       headers: {
         // Authorization: `Bearer ${token}`,
@@ -27,7 +27,7 @@ export const getCountriesApi = async () => {
 
 export const createCountryApi = async (newCountry) => {
   try {
-    const response = await fetch(`${BASE_URL}/countries`, {
+    const response = await fetch(`${BASE_URL}/countries/`, {
       method: "POST",
       headers: {
         // Authorization: `Bearer ${token}`,
