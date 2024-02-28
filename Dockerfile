@@ -12,6 +12,6 @@ EXPOSE 3000
 
 RUN npm run build
 
-FROM scratch
+FROM nginx:alpine
 
 COPY --from=build /react-front/build /usr/share/nginx/html
