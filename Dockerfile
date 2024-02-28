@@ -8,10 +8,10 @@ COPY package.json /react-front/
 
 RUN npm install
 
-EXPOSE 3000
+# EXPOSE 3000
 
-RUN npm run build
+# RUN npm run build
 
-FROM nginx:alpine
+# FROM nginx:alpine
 
-COPY --from=build /react-front/build /usr/share/nginx/html
+# COPY --from=build /react-front/build /usr/share/nginx/html
