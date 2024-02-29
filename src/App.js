@@ -21,6 +21,7 @@ function App() {
   const [theme, colorMode] = useMode();
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
   const [username, setUsername] = useState();
+  const [loading, setLoading] = useState();
 
   useEffect(() => {
     const fetchUser = async () => {

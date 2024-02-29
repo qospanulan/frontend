@@ -11,7 +11,7 @@ export const useLogin = () => {
     setError(null);
     const BASE_URL = process.env.REACT_APP_API_URL;
 
-    const response = await fetch(`${BASE_URL}/auth/token`, {
+    const response = await fetch(`${BASE_URL}/auth/token/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
