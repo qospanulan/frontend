@@ -32,6 +32,7 @@ import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 
 // import SearchIcon from "@mui/icons-material/Search";
 import { getCurrentUser } from "../../state/api/users/signIn";
+import Loading from "../../components/Loading";
 
 const LoginForm = () => {
   const theme = useTheme();
@@ -74,153 +75,159 @@ const LoginForm = () => {
   // ========
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
-  const { login, error, isLoading } = useLogin();
+  const { login, error, isLoading, setIsLoading } = useLogin();
 
   const handleLogin = async (values) => {
     login(values.email, values.password);
 
     setTimeout(() => {
       window.location.reload();
-    }, 1000);
+      setIsLoading(false);
+    }, 2000);
   };
 
   return (
-    <Box
-      display="block"
-      m="20px"
-      width={"100%"}
-      justifyContent={"center"}
-      alignItems={"center"}
-      // border={"1px solid black"}
-    >
-      <Box display="flex" justifyContent="space-between" p={2}>
-        {/* ICONS */}
-        {/* Нужно откомментить позже */}
-        <IconButton onClick={colorMode.toggleColorMode}>
-          {theme.palette.mode === "dark" ? (
-            <DarkModeOutlinedIcon />
-          ) : (
-            <LightModeOutlinedIcon />
-          )}
-        </IconButton>
-
-        <IconButton
-          id="fade-button"
-          aria-controls={open ? "fade-menu" : undefined}
-          aria-haspopup="true"
-          aria-expanded={open ? "true" : undefined}
-          onClick={handleClick}
-        >
-          <PersonOutlinedIcon />
-        </IconButton>
-
-        <Menu
-          id="fade-menu"
-          MenuListProps={{
-            "aria-labelledby": "user-menu",
-          }}
-          anchorEl={anchorEl}
-          open={open}
-          onClose={handleClose}
-          TransitionComponent={Fade}
-        >
-          {
-            user &&
-              // <>
-              ((<MenuItem onClick={handleClose}>{username}</MenuItem>),
-              (
-                <MenuItem onClick={handleLogout}>
-                  {/* <Typography>Вы вышли</Typography> */}
-                  <Link to="/logout">Logout</Link>
-                </MenuItem>
-              ))
-            // </>
-          }
-          {!user && (
-            <MenuItem>
-              <Link to="/login">Login</Link>
-            </MenuItem>
-          )}
-        </Menu>
-      </Box>
-
+    <>
+      <Loading isOpen={isLoading} />
       <Box
         display="block"
-        m="20px auto"
-        p="20px"
-        width={"500px"}
+        m="20px"
+        width={"100%"}
         justifyContent={"center"}
         alignItems={"center"}
         // border={"1px solid black"}
-        borderRadius={"5px"}
-        boxShadow={"0px 0px 5px 5px #d9dde2"}
       >
-        <Header title="LOGIN" subtitle="Login to account"></Header>
-        <Formik
-          onSubmit={handleLogin}
-          initialValues={initialValues}
-          validationSchema={orderSchema}
+        <Box display="flex" justifyContent="space-between" p={2}>
+          {/* ICONS */}
+          {/* Нужно откомментить позже */}
+          <IconButton onClick={colorMode.toggleColorMode}>
+            {theme.palette.mode === "dark" ? (
+              <DarkModeOutlinedIcon />
+            ) : (
+              <LightModeOutlinedIcon />
+            )}
+          </IconButton>
+
+          <IconButton
+            id="fade-button"
+            aria-controls={open ? "fade-menu" : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? "true" : undefined}
+            onClick={handleClick}
+          >
+            <PersonOutlinedIcon />
+          </IconButton>
+
+          <Menu
+            id="fade-menu"
+            MenuListProps={{
+              "aria-labelledby": "user-menu",
+            }}
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+            TransitionComponent={Fade}
+          >
+            {
+              user &&
+                // <>
+                ((<MenuItem onClick={handleClose}>{username}</MenuItem>),
+                (
+                  <MenuItem onClick={handleLogout}>
+                    {/* <Typography>Вы вышли</Typography> */}
+                    <Link to="/logout">Logout</Link>
+                  </MenuItem>
+                ))
+              // </>
+            }
+            {!user && (
+              <MenuItem>
+                <Link to="/login">Login</Link>
+              </MenuItem>
+            )}
+          </Menu>
+        </Box>
+
+        <Box
+          display="block"
+          m="20px auto"
+          p="20px"
+          width={"500px"}
+          justifyContent={"center"}
+          alignItems={"center"}
+          // border={"1px solid black"}
+          borderRadius={"5px"}
+          boxShadow={"0px 0px 5px 5px #d9dde2"}
         >
-          {({
-            values,
-            errors,
-            touched,
-            handleBlur,
-            handleChange,
-            handleSubmit,
-          }) => (
-            <Form onSubmit={handleSubmit}>
-              <Box
-                display="block"
-                m=""
-                gridTemplateColumns="repeat(6, minmax(0, 1fr))"
-                sx={{
-                  "& > div": { gridColumn: isNonMobile ? undefined : "span 6" },
-                }}
-                mt="20px"
-              >
-                <TextField
-                  fullWidth
-                  variant="filled"
-                  type="text"
-                  label="Email"
-                  onBlur={handleBlur}
-                  // onChange={(e) => setEmail(e.target.value)}
-                  onChange={handleChange}
-                  value={values.email}
-                  name="email"
-                  error={!!touched.email && !!errors.email}
-                  helperText={touched.email && errors.email}
-                  sx={{ gridColumn: "span 1", mb: "20px" }}
-                />
+          <Header title="LOGIN" subtitle="Login to account"></Header>
+          <Formik
+            onSubmit={handleLogin}
+            initialValues={initialValues}
+            validationSchema={orderSchema}
+          >
+            {({
+              values,
+              errors,
+              touched,
+              handleBlur,
+              handleChange,
+              handleSubmit,
+            }) => (
+              <Form onSubmit={handleSubmit}>
+                <Box
+                  display="block"
+                  m=""
+                  gridTemplateColumns="repeat(6, minmax(0, 1fr))"
+                  sx={{
+                    "& > div": {
+                      gridColumn: isNonMobile ? undefined : "span 6",
+                    },
+                  }}
+                  mt="20px"
+                >
+                  <TextField
+                    fullWidth
+                    variant="filled"
+                    type="text"
+                    label="Email"
+                    onBlur={handleBlur}
+                    // onChange={(e) => setEmail(e.target.value)}
+                    onChange={handleChange}
+                    value={values.email}
+                    name="email"
+                    error={!!touched.email && !!errors.email}
+                    helperText={touched.email && errors.email}
+                    sx={{ gridColumn: "span 1", mb: "20px" }}
+                  />
 
-                <TextField
-                  fullWidth
-                  variant="filled"
-                  type="password"
-                  label="Password"
-                  onBlur={handleBlur}
-                  // onChange={(e) => setPassword(e.target.value)}
-                  onChange={handleChange}
-                  value={values.password}
-                  name="password"
-                  error={!!touched.password && !!errors.password}
-                  helperText={touched.password && errors.password}
-                  sx={{ gridColumn: "span 1" }}
-                />
-              </Box>
+                  <TextField
+                    fullWidth
+                    variant="filled"
+                    type="password"
+                    label="Password"
+                    onBlur={handleBlur}
+                    // onChange={(e) => setPassword(e.target.value)}
+                    onChange={handleChange}
+                    value={values.password}
+                    name="password"
+                    error={!!touched.password && !!errors.password}
+                    helperText={touched.password && errors.password}
+                    sx={{ gridColumn: "span 1" }}
+                  />
+                </Box>
 
-              <Box display="flex" justifyContent="end" mt="20px">
-                <Button type="submit" color="secondary" variant="contained">
-                  {/* <Link to="/">Login</Link> */}
-                  Login
-                </Button>
-              </Box>
-            </Form>
-          )}
-        </Formik>
+                <Box display="flex" justifyContent="end" mt="20px">
+                  <Button type="submit" color="secondary" variant="contained">
+                    {/* <Link to="/">Login</Link> */}
+                    Login
+                  </Button>
+                </Box>
+              </Form>
+            )}
+          </Formik>
+        </Box>
       </Box>
-    </Box>
+    </>
   );
 };
 

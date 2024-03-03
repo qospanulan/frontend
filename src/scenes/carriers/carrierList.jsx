@@ -12,6 +12,7 @@ import {
 import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
+import Detail from "../../components/Detail";
 import { useEffect, useState } from "react";
 import { getCarriersApi } from "../../state/api/carriers";
 
@@ -127,79 +128,23 @@ const Carriers = () => {
 
   return (
     <>
-      <Modal
-        open={isOpen}
-        onClose={() => setIsOpen(false)}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box
-          m="20px"
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: 500,
-            bgcolor: "background.paper",
-            border: "1px solid #000",
-            borderRadius: "5px",
-            p: 4,
-          }}
-        >
-          <Box mb="30px">
-            <Typography
-              variant="h4"
-              color={colors.primary[400]}
-              fontWeight="bold"
-              sx={{ mb: "5px" }}
-            >
-              {`Numbers of carrier 
-                ${
-                  carriers &&
-                  carriers.find((carrier) => {
-                    return carrier.id === detailId;
-                  })?.name
-                }`}
-            </Typography>
-          </Box>
-          <Grid container spacing={2}>
-            <Grid item xs={12} md={6}>
-              <List>
-                {carriers &&
-                  carriers
-                    .find((carrier) => {
-                      return carrier.id === detailId;
-                    })
-                    ?.numbers.map((number_info) => {
-                      return (
-                        <ListItem>
-                          <Typography
-                            variant="h6"
-                            color={colors.greenAccent[400]}
-                          >
-                            {number_info.number}
-                          </Typography>
-                        </ListItem>
-                      );
-                    })}
-              </List>
-            </Grid>
-          </Grid>
-
-          <Box display="flex" justifyContent="end" mt="20px">
-            <Button
-              type="button"
-              color="error"
-              variant="outlined"
-              sx={{ mx: "5px" }}
-              onClick={() => setIsOpen(false)}
-            >
-              Cancel
-            </Button>
-          </Box>
-        </Box>
-      </Modal>
+      <Detail
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        title={`Numbers of carrier 
+        ${
+          carriers &&
+          carriers.find((carrier) => {
+            return carrier.id === detailId;
+          })?.name
+        }`}
+        data={
+          carriers &&
+          carriers.find((carrier) => {
+            return carrier.id === detailId;
+          })?.numbers
+        }
+      />
       <Box m="20px">
         <Header title="CARRIERS" subtitle="Create new carrier" />
         <Box m="40px 0 0 0" height="75vh">

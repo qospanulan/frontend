@@ -21,17 +21,20 @@ function App() {
   const [theme, colorMode] = useMode();
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
   const [username, setUsername] = useState();
-  const [loading, setLoading] = useState();
+  // const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchUser = async () => {
       setUser(JSON.parse(localStorage.getItem("user")));
-      if (user?.token) {
+      if (user) {
         const response = await getCurrentUser(user.token);
 
         if (response) {
           setUsername(response.first_name + " " + response.last_name);
+          // setLoading(false);
         }
+      } else {
+        // setLoading(false);
       }
     };
 
