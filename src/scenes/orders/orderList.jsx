@@ -3,7 +3,9 @@ import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
 import { useEffect, useState } from "react";
-import { getOrdersApi } from "../../state/api/orders";
+import { getOrdersApi } from "../../state/api/orders/orders";
+import Detail from "../../components/Detail";
+import { getBnumberGroupNumbersApi } from "../../state/api/orders/bnumberGroups";
 
 const Orders = () => {
   const theme = useTheme();
@@ -11,6 +13,10 @@ const Orders = () => {
 
   const [loading, setLoading] = useState(false);
   const [orders, setOrders] = useState([]);
+  const [bnumbers, setBnumbers] = useState([]);
+  const [detailName, setDetailName] = useState();
+  // const [bnumberId, setBnumberId] = useState();
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     async function fetchOrders() {
@@ -23,6 +29,28 @@ const Orders = () => {
 
     fetchOrders();
   }, []);
+
+  const handleDetailClick = function (name) {
+    // console.log("detail id", detailName);
+    setDetailName(name);
+    setIsOpen(true);
+  };
+
+  // const handleGettingBnumbers = (id) => async () => {
+  const handleGettingBnumbers = async (id) => {
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    console.log(id);
+
+    const response = await getBnumberGroupNumbersApi(user.token, id);
+    if (response) {
+      setBnumbers(response.bnumbers);
+      // toast.success("Bnumber group deleted");
+      // setBnumberGroups(bnumberGroups.filter((row) => row.id !== id));
+    } else {
+      // toast.error("Error while getting B numbers");
+    }
+  };
 
   const columns = [
     {
@@ -72,15 +100,48 @@ const Orders = () => {
       headerName: "Action On FAS",
       flex: 1,
     },
+    {
+      field: "bnumber_group",
+      headerName: "Bnumber Group",
+      flex: 1,
+      renderCell: (params) => {
+        return (
+          <Box display="flex">
+            <Button
+              type="button"
+              color="info"
+              variant="contained"
+              sx={{ mx: "5px" }}
+              onClick={() => {
+                console.log("test1");
+                handleGettingBnumbers(params.row.bnumber_group?.id);
+                handleDetailClick(params.row.bnumber_group?.name);
+              }}
+            >
+              {params.row.bnumber_group?.name || ""}
+            </Button>
+          </Box>
+        );
+      },
+    },
   ];
 
   return (
-    <Box m="20px">
-      <Header title="ORDERS" subtitle="All created orders" />
-      <Box m="40px 0 0 0" height="75vh">
-        <DataGrid rows={orders} columns={columns} />
+    <>
+      <Detail
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        title={`Numbers of Bnumber Group 
+          ${detailName}`}
+        data={bnumbers && bnumbers.map((bnumber) => bnumber.bnumber)}
+      />
+      <Box m="20px">
+        <Header title="ORDERS" subtitle="All created orders" />
+        <Box m="40px 0 0 0" height="75vh">
+          <DataGrid rows={orders} columns={columns} />
+        </Box>
       </Box>
-    </Box>
+    </>
   );
 };
 

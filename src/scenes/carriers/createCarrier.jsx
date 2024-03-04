@@ -14,10 +14,10 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import Header from "../../components/Header";
-import { createCarrierApi } from "../../state/api/carriers";
-import { createNumbersApi } from "../../state/api/numbers";
-import { getRouteTypesApi } from "../../state/api/routeTypes";
-import { getCountriesApi } from "../../state/api/countries";
+import { createCarrierApi } from "../../state/api/carriers/carriers";
+import { createNumbersApi } from "../../state/api/carriers/numbers";
+import { getRouteTypesApi } from "../../state/api/carriers/routeTypes";
+import { getCountriesApi } from "../../state/api/carriers/countries";
 
 import { tokens } from "../../theme";
 

@@ -15,12 +15,12 @@ import Header from "../../components/Header";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-import { createOrderApi } from "../../state/api/orders";
+import { createOrderApi } from "../../state/api/orders/orders";
 
-import { getCarriersApi } from "../../state/api/carriers";
-import { getCountriesApi } from "../../state/api/countries";
-import { getCallTypesApi } from "../../state/api/callTypes";
-import { getBnumberGroupsApi } from "../../state/api/bnumberGroups";
+import { getCarriersApi } from "../../state/api/carriers/carriers";
+import { getCountriesApi } from "../../state/api/carriers/countries";
+import { getCallTypesApi } from "../../state/api/orders/callTypes";
+import { getBnumberGroupsApi } from "../../state/api/orders/bnumberGroups";
 
 const CreateOrders = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
@@ -335,7 +335,7 @@ const CreateOrders = () => {
                         answered_call_duration: 0,
                         action_on_fas: "",
                         // answer_audio_type: "",
-                        bnumber_group: "",
+                        bnumber_group_id: "",
                       })
                     }
                   >

@@ -37,7 +37,9 @@ import {
   deleteBnumberGroupsApi,
   getBnumberGroupNumbersApi,
   getBnumberGroupsApi,
-} from "../../state/api/bnumberGroups";
+} from "../../state/api/orders/bnumberGroups";
+import Confirm from "../../components/Confirm";
+import Detail from "../../components/Detail";
 
 const CreateBnumberGroup = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
@@ -46,11 +48,15 @@ const CreateBnumberGroup = () => {
   const colors = tokens(theme.palette.mode);
 
   const [selectedFile, setSelectedFile] = useState(null);
+  const [selectedId, setSelectedId] = useState(null);
   const [bnumberGroups, setBnumberGroups] = useState([]);
   const [bnumbers, setBnumbers] = useState([
     { id: "", group_id: "", bnumber: "" },
   ]);
+  const [detailName, setDetailName] = useState();
+
   const [loading, setLoading] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [open, setOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -72,7 +78,7 @@ const CreateBnumberGroup = () => {
     fetchBnumberGroups();
   }, []);
 
-  const handleGettingBnumbers = (id) => async () => {
+  const handleGettingBnumbers = async (id) => {
     const user = JSON.parse(localStorage.getItem("user"));
 
     console.log(id);
@@ -81,6 +87,7 @@ const CreateBnumberGroup = () => {
     if (response) {
       setBnumbers(response.bnumbers);
       setIsOpen(true);
+      console.log(bnumbers);
       // toast.success("Bnumber group deleted");
       // setBnumberGroups(bnumberGroups.filter((row) => row.id !== id));
     } else {
@@ -130,6 +137,12 @@ const CreateBnumberGroup = () => {
     values.file = "";
   };
 
+  const handleDetailClick = function (name) {
+    // console.log("detail id", detailName);
+    setDetailName(name);
+    setIsOpen(true);
+  };
+
   const handleFormChange = (event) => {
     console.log(event.target.files);
     setSelectedFile(event.target.files[0]);
@@ -140,6 +153,7 @@ const CreateBnumberGroup = () => {
   };
 
   const handleDeleteClick = (id) => async () => {
+    console.log("test2");
     const user = JSON.parse(localStorage.getItem("user"));
 
     const response = await deleteBnumberGroupsApi(id, user.token);
@@ -157,31 +171,30 @@ const CreateBnumberGroup = () => {
       headerName: "Order ID",
       flex: 1,
     },
-    // {
-    //   field: "numbers",
-    //   headerName: "Numbers",
-    //   flex: 1,
-    //   renderCell: (params) => {
-    //     return (
-    //       <Box display="flex">
-    //         <Box>
-    //           <Button
-    //             type="button"
-    //             color="info"
-    //             variant="contained"
-    //             sx={{ mx: "5px" }}
-    //             onClick={() => handleGettingBnumbers(params)}
-    //           >
-    //             Detail
-    //           </Button>
-    //         </Box>
-    //         {/* {params.row.numbers.map(
-    //           (number_info) => ` ${number_info.number}`
-    //         ) || ""} */}
-    //       </Box>
-    //     );
-    //   },
-    // },
+    {
+      field: "bnumber_group_detail",
+      headerName: "Numbers",
+      flex: 1,
+      renderCell: (params) => {
+        return (
+          <Box display="flex">
+            <Button
+              type="button"
+              color="info"
+              variant="contained"
+              sx={{ mx: "5px" }}
+              onClick={() => {
+                console.log("test1", params.row?.id);
+                handleGettingBnumbers(params.row?.id);
+                handleDetailClick(params.row?.name);
+              }}
+            >
+              Detail
+            </Button>
+          </Box>
+        );
+      },
+    },
     {
       field: "actions",
       type: "actions",
@@ -193,7 +206,11 @@ const CreateBnumberGroup = () => {
           <GridActionsCellItem
             icon={<DeleteIcon />}
             label="Delete"
-            onClick={handleDeleteClick(id)}
+            // onClick={() => handleDeleteClick(id)}
+            onClick={() => {
+              setDeleting(true);
+              setSelectedId(id);
+            }}
             color="inherit"
           />,
         ];
@@ -203,76 +220,19 @@ const CreateBnumberGroup = () => {
 
   return (
     <>
-      {/* <Modal
-        open={isOpen}
-        onClose={() => setIsOpen(false)}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box
-          m="20px"
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: 500,
-            bgcolor: "background.paper",
-            border: "1px solid #000",
-            borderRadius: "5px",
-            p: 4,
-          }}
-        >
-          <Box mb="30px">
-            <Typography
-              variant="h4"
-              color={colors.primary[400]}
-              fontWeight="bold"
-              sx={{ mb: "5px" }}
-            >
-              {`Numbers of bnumber group 
-                ${
-                  bnumberGroups &&
-                  bnumberGroups?.find((bnumberGroup) => {
-                    return bnumberGroup.id === bnumbers?.group_id;
-                  })?.name
-                }`}
-            </Typography>
-          </Box>
-          <Grid container spacing={2}>
-            <Grid item xs={12} md={6}>
-              <List>
-                {bnumbers &&
-                  bnumbers?.map((number_info) => {
-                    return (
-                      <ListItem>
-                        <Typography
-                          variant="h6"
-                          color={colors.greenAccent[400]}
-                        >
-                          {number_info.bnumber}
-                        </Typography>
-                      </ListItem>
-                    );
-                  })}
-              </List>
-            </Grid>
-          </Grid>
-
-          <Box display="flex" justifyContent="end" mt="20px">
-            <Button
-              type="button"
-              color="error"
-              variant="outlined"
-              sx={{ mx: "5px" }}
-              onClick={() => setIsOpen(false)}
-            >
-              Cancel
-            </Button>
-          </Box>
-        </Box>
-      </Modal> */}
-
+      <Confirm
+        isOpen={deleting}
+        setIsOpen={setDeleting}
+        title="Delete Bnumber Group?"
+        onConfirm={handleDeleteClick(selectedId)}
+      />
+      <Detail
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        title={`Numbers of Bnumber Group 
+          ${detailName}`}
+        data={bnumbers && bnumbers.map((bnumber) => bnumber.bnumber)}
+      />
       <Modal
         open={open}
         onClose={() => setOpen(false)}

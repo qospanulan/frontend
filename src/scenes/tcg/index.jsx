@@ -3,7 +3,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
 import { useEffect, useState } from "react";
-import { getOrdersApi } from "../../state/api/orders";
+import { getOrdersApi } from "../../state/api/orders/orders";
 import { getReceivedCallsApi } from "../../state/api/tcg/receivedCalls";
 
 const TCG = () => {

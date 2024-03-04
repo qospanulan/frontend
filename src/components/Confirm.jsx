@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import { tokens } from "../theme";
 
-const Detail = ({ isOpen, setIsOpen, title, data }) => {
+const Confirm = ({ isOpen, setIsOpen, title, onConfirm }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   return (
@@ -44,22 +44,6 @@ const Detail = ({ isOpen, setIsOpen, title, data }) => {
             {title}
           </Typography>
         </Box>
-        <Grid container spacing={2}>
-          <Grid item xs={12} md={6}>
-            <List>
-              {data &&
-                data.map((number) => {
-                  return (
-                    <ListItem>
-                      <Typography variant="h6" color={colors.greenAccent[400]}>
-                        {number}
-                      </Typography>
-                    </ListItem>
-                  );
-                })}
-            </List>
-          </Grid>
-        </Grid>
 
         <Box display="flex" justifyContent="end" mt="20px">
           <Button
@@ -71,10 +55,22 @@ const Detail = ({ isOpen, setIsOpen, title, data }) => {
           >
             Cancel
           </Button>
+          <Button
+            type="button"
+            color="success"
+            variant="contained"
+            sx={{ mx: "5px" }}
+            onClick={() => {
+              onConfirm();
+              setIsOpen(false);
+            }}
+          >
+            Confirm
+          </Button>
         </Box>
       </Box>
     </Modal>
   );
 };
 
-export default Detail;
+export default Confirm;

@@ -14,7 +14,7 @@ import { tokens } from "../../theme";
 import Header from "../../components/Header";
 import Detail from "../../components/Detail";
 import { useEffect, useState } from "react";
-import { getCarriersApi } from "../../state/api/carriers";
+import { getCarriersApi } from "../../state/api/carriers/carriers";
 
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 
@@ -83,8 +83,6 @@ const Carriers = () => {
       field: "numbers",
       headerName: "Numbers",
       flex: 1,
-      valueGetter: (params) =>
-        params.row.numbers.map((number_info) => ` ${number_info.number}`) || "",
       renderCell: (params) => {
         return (
           <Box display="flex">
@@ -140,9 +138,11 @@ const Carriers = () => {
         }`}
         data={
           carriers &&
-          carriers.find((carrier) => {
-            return carrier.id === detailId;
-          })?.numbers
+          carriers
+            .find((carrier) => {
+              return carrier.id === detailId;
+            })
+            ?.numbers.map((number_info) => number_info.number)
         }
       />
       <Box m="20px">
