@@ -37,8 +37,10 @@ const Carriers = () => {
 
   useEffect(() => {
     async function fetchCarriers() {
+      const user = JSON.parse(localStorage.getItem("user"));
+
       setLoading(true);
-      const carriers = await getCarriersApi();
+      const carriers = await getCarriersApi(user.token);
 
       setCarriers(carriers);
       setLoading(false);

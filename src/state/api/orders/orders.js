@@ -48,9 +48,6 @@ export const createOrderApi = async (newOrder) => {
       (element) => (element.order_id = createdOrderGroup.id)
     );
 
-    // console.log(createdOrderGroup);
-    // console.log(newOrder.orders);
-
     const response2 = await fetch(`${BASE_URL}/orders/all/`, {
       method: "POST",
       headers: {

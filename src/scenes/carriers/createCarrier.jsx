@@ -59,7 +59,6 @@ const CreateCarrier = () => {
   }, []);
 
   const handleFormSubmit = async (values, onSubmitProps) => {
-    console.log(values);
     const newCarrier = await createCarrierApi(values);
     {
       newCarrier

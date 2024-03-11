@@ -61,7 +61,6 @@ const LoginForm = () => {
     const fetchUser = async () => {
       try {
         // setUser(JSON.parse(localStorage.getItem("user")));
-        // console.log("in topbar", user.email, user.token);
         const response = await getCurrentUser(user.token);
         setUsername(response.first_name + " " + response.last_name);
       } catch (err) {

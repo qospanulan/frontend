@@ -31,7 +31,6 @@ const Orders = () => {
   }, []);
 
   const handleDetailClick = function (name) {
-    // console.log("detail id", detailName);
     setDetailName(name);
     setIsOpen(true);
   };
@@ -39,8 +38,6 @@ const Orders = () => {
   // const handleGettingBnumbers = (id) => async () => {
   const handleGettingBnumbers = async (id) => {
     const user = JSON.parse(localStorage.getItem("user"));
-
-    console.log(id);
 
     const response = await getBnumberGroupNumbersApi(user.token, id);
     if (response) {
@@ -113,7 +110,6 @@ const Orders = () => {
               variant="contained"
               sx={{ mx: "5px" }}
               onClick={() => {
-                console.log("test1");
                 handleGettingBnumbers(params.row.bnumber_group?.id);
                 handleDetailClick(params.row.bnumber_group?.name);
               }}

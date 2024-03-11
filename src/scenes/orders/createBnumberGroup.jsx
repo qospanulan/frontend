@@ -81,13 +81,10 @@ const CreateBnumberGroup = () => {
   const handleGettingBnumbers = async (id) => {
     const user = JSON.parse(localStorage.getItem("user"));
 
-    console.log(id);
-
     const response = await getBnumberGroupNumbersApi(user.token, id);
     if (response) {
       setBnumbers(response.bnumbers);
       setIsOpen(true);
-      console.log(bnumbers);
       // toast.success("Bnumber group deleted");
       // setBnumberGroups(bnumberGroups.filter((row) => row.id !== id));
     } else {
@@ -114,14 +111,12 @@ const CreateBnumberGroup = () => {
 
   const handleFormSubmit = async (values) => {
     const token = localStorage.getItem("token");
-    console.log(values);
     if (!selectedFile) {
       return;
     }
 
     const formData = new FormData();
     formData.append("file", selectedFile);
-    console.log(selectedFile);
 
     formData.append("name", values.name);
 
@@ -138,13 +133,11 @@ const CreateBnumberGroup = () => {
   };
 
   const handleDetailClick = function (name) {
-    // console.log("detail id", detailName);
     setDetailName(name);
     setIsOpen(true);
   };
 
   const handleFormChange = (event) => {
-    console.log(event.target.files);
     setSelectedFile(event.target.files[0]);
   };
 
@@ -153,7 +146,6 @@ const CreateBnumberGroup = () => {
   };
 
   const handleDeleteClick = (id) => async () => {
-    console.log("test2");
     const user = JSON.parse(localStorage.getItem("user"));
 
     const response = await deleteBnumberGroupsApi(id, user.token);
@@ -184,7 +176,6 @@ const CreateBnumberGroup = () => {
               variant="contained"
               sx={{ mx: "5px" }}
               onClick={() => {
-                console.log("test1", params.row?.id);
                 handleGettingBnumbers(params.row?.id);
                 handleDetailClick(params.row?.name);
               }}

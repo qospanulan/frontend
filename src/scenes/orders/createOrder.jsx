@@ -91,7 +91,6 @@ const CreateOrders = () => {
   }, []);
 
   const handleFormSubmit = async (values, onSubmitProps) => {
-    console.log(values);
     try {
       const orders = await createOrderApi(values);
       {
