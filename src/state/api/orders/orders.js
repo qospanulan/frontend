@@ -44,9 +44,10 @@ export const createOrderApi = async (newOrder) => {
     }
 
     let createdOrderGroup = await response1.json();
-    newOrder.orders.forEach(
-      (element) => (element.order_id = createdOrderGroup.id)
-    );
+    newOrder.orders.forEach((element) => {
+      element.order_id = createdOrderGroup.id;
+      element.bnumber_group_id = newOrder.bnumber_group_id;
+    });
 
     const response2 = await fetch(`${BASE_URL}/orders/all/`, {
       method: "POST",

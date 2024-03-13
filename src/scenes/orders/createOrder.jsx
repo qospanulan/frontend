@@ -130,6 +130,7 @@ const CreateOrders = () => {
                 "& > div": { gridColumn: isNonMobile ? undefined : "span 6" },
               }}
               mt="20px"
+              mb="30px"
             >
               <TextField
                 fullWidth
@@ -142,8 +143,27 @@ const CreateOrders = () => {
                 name="order_group_name"
                 error={!!touched.order_group_name && !!errors.order_group_name}
                 helperText={touched.order_group_name && errors.order_group_name}
-                sx={{ gridColumn: "span 1" }}
+                sx={{ gridColumn: "span 2" }}
               />
+              {/* Bnumber Group */}
+              <TextField
+                select
+                fullWidth
+                variant="filled"
+                type="select"
+                label="Bnumber Group"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.bnumber_group_id}
+                name={`bnumber_group_id`}
+                sx={{ gridColumn: "span 2" }}
+              >
+                {bnumberGroups.map((bnumberGroup) => (
+                  <MenuItem key={bnumberGroup.id} value={bnumberGroup.id}>
+                    {bnumberGroup.name}
+                  </MenuItem>
+                ))}
+              </TextField>
             </Box>
 
             {/* Orders */}
@@ -157,10 +177,10 @@ const CreateOrders = () => {
                           mb="20px"
                           gap="30px"
                           key={index}
-                          gridTemplateColumns="repeat(18, 1fr)"
+                          gridTemplateColumns="repeat(21, 1fr)"
                           sx={{
                             "& > div": {
-                              gridColumn: isNonMobile ? undefined : "span 18",
+                              gridColumn: isNonMobile ? undefined : "span 21",
                             },
                           }}
                         >
@@ -185,7 +205,7 @@ const CreateOrders = () => {
                             //   touched.orders[index].country_id &&
                             //   errors.orders[index].country_id
                             // }
-                            sx={{ gridColumn: "span 2" }}
+                            sx={{ gridColumn: "span 3" }}
                           >
                             {countries.map((country) => (
                               <MenuItem key={country.id} value={country.id}>
@@ -205,7 +225,7 @@ const CreateOrders = () => {
                             onChange={handleChange}
                             value={order.carrier_id}
                             name={`orders.${index}.carrier_id`}
-                            sx={{ gridColumn: "span 2" }}
+                            sx={{ gridColumn: "span 3" }}
                           >
                             {carriers
                               .filter(
@@ -230,7 +250,7 @@ const CreateOrders = () => {
                             onChange={handleChange}
                             value={order.call_type_id}
                             name={`orders.${index}.call_type_id`}
-                            sx={{ gridColumn: "span 2" }}
+                            sx={{ gridColumn: "span 3" }}
                           >
                             {callTypes.map((callType) => (
                               <MenuItem key={callType.id} value={callType.id}>
@@ -249,7 +269,7 @@ const CreateOrders = () => {
                             onChange={handleChange}
                             value={order.percentage_of_calls}
                             name={`orders.${index}.percentage_of_calls`}
-                            sx={{ gridColumn: "span 2" }}
+                            sx={{ gridColumn: "span 3" }}
                           />
 
                           {/* Call duration */}
@@ -257,12 +277,12 @@ const CreateOrders = () => {
                             fullWidth
                             variant="filled"
                             type="number"
-                            label="Answered Call Duration"
+                            label="ACD"
                             onBlur={handleBlur}
                             onChange={handleChange}
                             value={order.answered_call_duration}
                             name={`orders.${index}.answered_call_duration`}
-                            sx={{ gridColumn: "span 2" }}
+                            sx={{ gridColumn: "span 3" }}
                           />
 
                           {/* Action on FAS */}
@@ -276,36 +296,13 @@ const CreateOrders = () => {
                             onChange={handleChange}
                             value={order.action_on_fas}
                             name={`orders.${index}.action_on_fas`}
-                            sx={{ gridColumn: "span 2" }}
+                            sx={{ gridColumn: "span 3" }}
                           >
                             {/* {callTypes.map((callType) => ( */}
                             <MenuItem value="block_the_route">
                               block_the_route
                             </MenuItem>
                             {/* ))} */}
-                          </TextField>
-
-                          {/* Bnumber Group */}
-                          <TextField
-                            select
-                            fullWidth
-                            variant="filled"
-                            type="select"
-                            label="Bnumber Group"
-                            onBlur={handleBlur}
-                            onChange={handleChange}
-                            value={order.bnumber_group_id}
-                            name={`orders.${index}.bnumber_group_id`}
-                            sx={{ gridColumn: "span 2" }}
-                          >
-                            {bnumberGroups.map((bnumberGroup) => (
-                              <MenuItem
-                                key={bnumberGroup.id}
-                                value={bnumberGroup.id}
-                              >
-                                {bnumberGroup.name}
-                              </MenuItem>
-                            ))}
                           </TextField>
 
                           <Box display="flex" justifyContent="end">
@@ -366,6 +363,7 @@ export default CreateOrders;
 
 const initialValues = {
   order_group_name: "",
+  bnumber_group_id: "",
   orders: [
     {
       country_id: "",
@@ -374,13 +372,13 @@ const initialValues = {
       percentage_of_calls: "",
       answered_call_duration: "",
       action_on_fas: "",
-      bnumber_group_id: "",
     },
   ],
 };
 
 const orderSchema = yup.object().shape({
   order_group_name: yup.string().required("required"),
+  bnumber_group_id: yup.string().required("required"),
   orders: yup.array().of(
     yup.object().shape({
       country_id: yup.string().required("required"),
@@ -390,7 +388,6 @@ const orderSchema = yup.object().shape({
       answered_call_duration: yup.number().required("required"),
       action_on_fas: yup.string().required("required"),
       // answer_audio_type: "",
-      bnumber_group_id: yup.string().required("required"),
     })
   ),
 });

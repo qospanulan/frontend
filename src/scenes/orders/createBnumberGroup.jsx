@@ -130,6 +130,7 @@ const CreateBnumberGroup = () => {
     }
     values.name = "";
     values.file = "";
+    setOpen(false);
   };
 
   const handleDetailClick = function (name) {
