@@ -10,24 +10,19 @@ import {
 } from "@mui/material";
 import { tokens } from "../theme";
 
-const Detail = ({ isOpen, setIsOpen, title, data }) => {
+const Detail = ({ isOpen, setIsOpen, title, ...props }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   return (
-    <Modal
-      open={isOpen}
-      onClose={() => setIsOpen(false)}
-      aria-labelledby="modal-modal-title"
-      aria-describedby="modal-modal-description"
-    >
+    <Modal open={isOpen} onClose={() => setIsOpen(false)}>
       <Box
         m="20px"
         sx={{
           position: "absolute",
           top: "50%",
           left: "50%",
+          width: "900px",
           transform: "translate(-50%, -50%)",
-          width: 500,
           bgcolor: "background.paper",
           border: "1px solid #000",
           borderRadius: "5px",
@@ -45,20 +40,32 @@ const Detail = ({ isOpen, setIsOpen, title, data }) => {
           </Typography>
         </Box>
         <Grid container spacing={2}>
-          <Grid item xs={12} md={6}>
-            <List>
-              {data &&
-                data.map((number) => {
-                  return (
-                    <ListItem>
-                      <Typography variant="h6" color={colors.greenAccent[400]}>
-                        {number}
-                      </Typography>
-                    </ListItem>
-                  );
-                })}
-            </List>
-          </Grid>
+          {Object.keys(props).map((key, index) => {
+            return (
+              <Grid item xs={6} md={4} key={index}>
+                <List>
+                  <ListItem>
+                    <Typography variant="h6" color={colors.greenAccent[100]}>
+                      {key}
+                    </Typography>
+                  </ListItem>
+                  {props[key] &&
+                    props[key].map((data) => {
+                      return (
+                        <ListItem width="300px">
+                          <Typography
+                            variant="h6"
+                            color={colors.greenAccent[400]}
+                          >
+                            {data}
+                          </Typography>
+                        </ListItem>
+                      );
+                    })}
+                </List>
+              </Grid>
+            );
+          })}
         </Grid>
 
         <Box display="flex" justifyContent="end" mt="20px">

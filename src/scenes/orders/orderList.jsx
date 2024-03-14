@@ -68,12 +68,12 @@ const Orders = () => {
       flex: 1,
       valueGetter: (params) => params.row.carrier?.name || "",
     },
-    {
-      field: "prefix",
-      headerName: "Prefix",
-      flex: 1,
-      valueGetter: (params) => params.row.carrier?.prefix || "",
-    },
+    // {
+    //   field: "prefix",
+    //   headerName: "Prefix",
+    //   flex: 1,
+    //   valueGetter: (params) => params.row.carrier?.prefix || "",
+    // },
     {
       field: "percentage_of_calls",
       headerName: "Percentage Of Calls",
@@ -129,7 +129,7 @@ const Orders = () => {
         setIsOpen={setIsOpen}
         title={`Numbers of Bnumber Group 
           ${detailName}`}
-        data={bnumbers && bnumbers.map((bnumber) => bnumber.bnumber)}
+        bnumbers={bnumbers && bnumbers.map((bnumber) => bnumber.bnumber)}
       />
       <Box m="20px">
         <Header title="ORDERS" subtitle="All created orders" />

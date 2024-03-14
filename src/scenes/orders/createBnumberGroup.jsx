@@ -223,7 +223,7 @@ const CreateBnumberGroup = () => {
         setIsOpen={setIsOpen}
         title={`Numbers of Bnumber Group 
           ${detailName}`}
-        data={bnumbers && bnumbers.map((bnumber) => bnumber.bnumber)}
+        numbers={bnumbers && bnumbers.map((bnumber) => bnumber.bnumber)}
       />
       <Modal
         open={open}

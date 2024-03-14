@@ -18,14 +18,6 @@ import { getCarriersApi } from "../../state/api/carriers/carriers";
 
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 
-// function generate(element) {
-//   return [0, 1, 2].map((value) =>
-//     cloneElement(element, {
-//       key: value,
-//     })
-//   );
-// }
-
 const Carriers = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -33,6 +25,11 @@ const Carriers = () => {
   const [loading, setLoading] = useState(false);
   const [carriers, setCarriers] = useState([]);
   const [detailId, setDetailId] = useState();
+  const [choosenCarrier, setChoosenCarrier] = useState({
+    name: "",
+    cli: [],
+    cli_ranges: [],
+  });
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
@@ -51,6 +48,12 @@ const Carriers = () => {
 
   const handleDetailClick = function (id) {
     setDetailId(id);
+    setChoosenCarrier(
+      carriers &&
+        carriers.find((carrier) => {
+          return carrier.id === id;
+        })
+    );
     setIsOpen(true);
   };
 
@@ -75,13 +78,6 @@ const Carriers = () => {
       flex: 1,
     },
     {
-      field: "prefix",
-      headerName: "Prefix",
-      flex: 1,
-      // headerAlign: "left",
-      // align: "left",
-    },
-    {
       field: "numbers",
       headerName: "Numbers",
       flex: 1,
@@ -99,31 +95,10 @@ const Carriers = () => {
                 Detail
               </Button>
             </Box>
-            {/* {params.row.numbers.map(
-              (number_info) => ` ${number_info.number}`
-            ) || ""} */}
           </Box>
         );
       },
     },
-    // {
-    //   field: "numbers_detail",
-    //   type: "actions",
-    //   headerName: "Numbers Detail",
-    //   width: 100,
-    //   cellClassName: "actions",
-    //   value: "89234...",
-    //   getActions: ({ id }) => {
-    //     return [
-    //       <GridActionsCellItem
-    //         icon={<DeleteIcon />}
-    //         label="Detail"
-    //         onClick={() => handleDetailClick(id)}
-    //         color="inherit"
-    //       />,
-    //     ];
-    //   },
-    // },
   ];
 
   return (
@@ -131,20 +106,33 @@ const Carriers = () => {
       <Detail
         isOpen={isOpen}
         setIsOpen={setIsOpen}
-        title={`Numbers of carrier 
+        title={`Prefixes and Numbers of carrier 
         ${
           carriers &&
           carriers.find((carrier) => {
             return carrier.id === detailId;
           })?.name
         }`}
-        data={
-          carriers &&
-          carriers
-            .find((carrier) => {
-              return carrier.id === detailId;
-            })
-            ?.numbers.map((number_info) => number_info.number)
+        prefixes={
+          choosenCarrier?.route_type?.name === "gsm"
+            ? choosenCarrier?.cli.map((number_info) => number_info.prefix)
+            : choosenCarrier?.cli_ranges.map((number_info) => (
+                <span>
+                  <br />
+                  {number_info.prefix}
+                </span>
+              ))
+        }
+        numbers={
+          choosenCarrier?.route_type?.name === "gsm"
+            ? choosenCarrier?.cli.map((number_info) => number_info.number)
+            : choosenCarrier?.cli_ranges.map((number_info) => (
+                <span>
+                  start: {number_info.start}
+                  <br />
+                  end: {number_info.end}
+                </span>
+              ))
         }
       />
       <Box m="20px">
