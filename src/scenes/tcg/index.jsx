@@ -26,6 +26,7 @@ import Header from "../../components/Header";
 import { useEffect, useState, useRef } from "react";
 import { getOrdersApi } from "../../state/api/orders/orders";
 import { getReceivedCallsApi } from "../../state/api/tcg/receivedCalls";
+import { useAuthContext } from "../../hooks/useAuthContext";
 
 const TCG = () => {
   const theme = useTheme();
@@ -39,6 +40,8 @@ const TCG = () => {
   // const [endDate, setEndDate] = useState(null);
   const [report, setReport] = useState({ is_xlsx: false, email: null });
   const [open, setOpen] = useState(false);
+
+  const authContext = useAuthContext();
 
   const [paginationModel, setPaginationModel] = useState({
     pageSize: 50,
@@ -77,8 +80,9 @@ const TCG = () => {
     async function fetchReceivedCalls() {
       let currentUser = JSON.parse(localStorage.getItem("user"));
       setIsLoading(true);
+      const { user } = authContext;
       const response = await getReceivedCallsApi({
-        token: currentUser.token,
+        token: user.token,
         filterModel: filterModel,
         paginationModel: paginationModel,
         report: { is_xlsx: false, email: null },
@@ -221,9 +225,12 @@ const TCG = () => {
     });
 
     setIsLoading(true);
+    const { user } = authContext;
+
     const response = await getReceivedCallsApi({
-      filterModel,
-      paginationModel,
+      token: user.token,
+      filterModel: filterModel,
+      paginationModel: paginationModel,
       report: {
         is_xlsx: true,
         email: values.email,
@@ -285,11 +292,11 @@ const TCG = () => {
       valueFormatter: (params) => new Date(params?.value).toISOString(),
       filterOperators: quantityOnlyOperators,
     },
-    // {
-    //   field: "duration",
-    //   headerName: "Duration",
-    //   flex: 1,
-    // },
+    {
+      field: "duration",
+      headerName: "Duration",
+      flex: 1,
+    },
     {
       field: "fraud_type",
       headerName: "Fraud Type",

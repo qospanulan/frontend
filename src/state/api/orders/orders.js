@@ -4,12 +4,12 @@
 const BASE_URL = process.env.REACT_APP_API_URL;
 
 // const {email, token} = useContext(UserContext)
-export const getOrdersApi = async () => {
+export const getOrdersApi = async (token) => {
   try {
     const response = await fetch(`${BASE_URL}/orders/`, {
       method: "GET",
       headers: {
-        // Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
     });

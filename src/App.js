@@ -69,7 +69,7 @@ function App() {
               <Routes>
                 <Route path="/login" element={<LoginForm />} />
                 <Route path="/logout" element={<LogoutForm />} />
-                {/* <Route path="*" element={<Navigate to="/login" replace />} /> */}
+                <Route path="/" element={<Navigate to="/login" replace />} />
               </Routes>
             )}
             {username && (

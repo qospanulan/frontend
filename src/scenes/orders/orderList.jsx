@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { getOrdersApi } from "../../state/api/orders/orders";
 import Detail from "../../components/Detail";
 import { getBnumberGroupNumbersApi } from "../../state/api/orders/bnumberGroups";
+import { useAuthContext } from "../../hooks/useAuthContext";
 
 const Orders = () => {
   const theme = useTheme();
@@ -18,10 +19,12 @@ const Orders = () => {
   // const [bnumberId, setBnumberId] = useState();
   const [isOpen, setIsOpen] = useState(false);
 
+  const { user } = useAuthContext();
+
   useEffect(() => {
     async function fetchOrders() {
       setLoading(true);
-      const orders = await getOrdersApi();
+      const orders = await getOrdersApi(user.token);
 
       setOrders(orders);
       setLoading(false);
