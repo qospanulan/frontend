@@ -1,6 +1,7 @@
 const BASE_URL = process.env.REACT_APP_API_URL;
 
 export const getReceivedCallsApi = async ({
+  token,
   filterModel,
   paginationModel,
   report,
@@ -18,6 +19,7 @@ export const getReceivedCallsApi = async ({
       {
         method: "GET",
         headers: {
+          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
       }

@@ -12,6 +12,7 @@ import ListAltIcon from "@mui/icons-material/ListAlt";
 import PlaylistAddCheckIcon from "@mui/icons-material/PlaylistAddCheck";
 import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
+import { useAuthContext } from "../../hooks/useAuthContext";
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
@@ -36,6 +37,8 @@ const Sidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState("TCG");
   const navigate = useNavigate();
+
+  const { user } = useAuthContext();
 
   return (
     <>
@@ -104,7 +107,7 @@ const Sidebar = () => {
                 Main
               </Typography> */}
 
-              {/* Carriers */}
+              {/* TCG */}
               <SubMenu
                 title="Reports"
                 style={{ color: colors.grey[100] }}
@@ -127,27 +130,29 @@ const Sidebar = () => {
               </Typography>
 
               {/* Carriers */}
-              <SubMenu
-                title="Carriers Panel"
-                style={{ color: colors.grey[100] }}
-                icon={<ContactsOutlinedIcon />}
-              >
-                <Item
-                  title="Carriers"
-                  to="/carriers"
-                  icon={<CallOutlinedIcon />}
-                  selected={selected}
-                  setSelected={setSelected}
-                />
+              {user && user.role !== "moderator" && (
+                <SubMenu
+                  title="Carriers Panel"
+                  style={{ color: colors.grey[100] }}
+                  icon={<ContactsOutlinedIcon />}
+                >
+                  <Item
+                    title="Carriers"
+                    to="/carriers"
+                    icon={<CallOutlinedIcon />}
+                    selected={selected}
+                    setSelected={setSelected}
+                  />
 
-                <Item
-                  title="Create Carrier"
-                  to="/carriers/new/"
-                  icon={<AddIcCallOutlinedIcon />}
-                  selected={selected}
-                  setSelected={setSelected}
-                />
-              </SubMenu>
+                  <Item
+                    title="Create Carrier"
+                    to="/carriers/new/"
+                    icon={<AddIcCallOutlinedIcon />}
+                    selected={selected}
+                    setSelected={setSelected}
+                  />
+                </SubMenu>
+              )}
 
               {/* Orders */}
               <SubMenu

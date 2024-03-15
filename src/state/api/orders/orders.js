@@ -25,12 +25,12 @@ export const getOrdersApi = async () => {
   }
 };
 
-export const createOrderApi = async (newOrder) => {
+export const createOrderApi = async (token, newOrder) => {
   try {
     const response1 = await fetch(`${BASE_URL}/orders/group/`, {
       method: "POST",
       headers: {
-        // Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ name: newOrder.order_group_name }),

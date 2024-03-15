@@ -79,10 +79,11 @@ const LoginForm = () => {
   const handleLogin = async (values) => {
     login(values.email, values.password);
 
-    setTimeout(() => {
-      window.location.reload();
-      setIsLoading(false);
-    }, 2000);
+    // setTimeout(() => {
+    //   window.location.reload();
+    //   setIsLoading(false);
+    // }, 2000);
+    setIsLoading(false);
   };
 
   return (
@@ -216,8 +217,13 @@ const LoginForm = () => {
                 </Box>
 
                 <Box display="flex" justifyContent="end" mt="20px">
-                  <Button type="submit" color="secondary" variant="contained">
-                    {/* <Link to="/">Login</Link> */}
+                  <Button
+                    // component={Link}
+                    // to="/"
+                    type="submit"
+                    color="secondary"
+                    variant="contained"
+                  >
                     Login
                   </Button>
                 </Box>

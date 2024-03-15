@@ -31,6 +31,7 @@ import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 // import { SearchIcon } from "@mui/icons-material/Search";
 import SearchIcon from "@mui/icons-material/Search";
 import { getCurrentUser } from "../../state/api/users/signIn";
+import { useAuthContext } from "../../hooks/useAuthContext";
 
 const Topbar = () => {
   const theme = useTheme();
@@ -39,6 +40,9 @@ const Topbar = () => {
 
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
   const [username, setUsername] = useState("");
+
+  const { dispatch } = useAuthContext();
+  const navigate = useNavigate();
 
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -51,10 +55,12 @@ const Topbar = () => {
   };
 
   const handleLogout = () => {
+    dispatch({ type: "LOGOUT" });
     setUser(null);
     localStorage.setItem("user", null);
 
     setTimeout(() => {
+      navigate("/login");
       window.location.reload();
     }, 500);
   };
@@ -126,7 +132,7 @@ const Topbar = () => {
           >
             <MenuItem onClick={handleClose}>{username}</MenuItem>
             <MenuItem onClick={handleLogout}>
-              {/* <Typography>Вы вышли</Typography> */}
+              {/* <Link to="/login">Logout</Link> */}
               Logout
             </MenuItem>
           </Menu>

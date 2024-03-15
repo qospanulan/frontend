@@ -91,8 +91,10 @@ const CreateOrders = () => {
   }, []);
 
   const handleFormSubmit = async (values, onSubmitProps) => {
+    let currentUser = JSON.parse(localStorage.getItem("user"));
+    // setUser(user);
     try {
-      const orders = await createOrderApi(values);
+      const orders = await createOrderApi(currentUser.token, values);
       {
         orders
           ? toast.success("Orders created")

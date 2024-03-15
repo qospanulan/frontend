@@ -75,12 +75,13 @@ const TCG = () => {
 
   useEffect(() => {
     async function fetchReceivedCalls() {
+      let currentUser = JSON.parse(localStorage.getItem("user"));
       setIsLoading(true);
       const response = await getReceivedCallsApi({
-        filterModel,
-        paginationModel,
+        token: currentUser.token,
+        filterModel: filterModel,
+        paginationModel: paginationModel,
         report: { is_xlsx: false, email: null },
-        // perPage,
       });
 
       setReceivedCalls(response.data);
@@ -244,11 +245,6 @@ const TCG = () => {
 
   const columns = [
     {
-      field: "order_id",
-      headerName: "Order ID",
-      flex: 1,
-    },
-    {
       field: "country",
       headerName: "Country",
       flex: 1,
@@ -260,48 +256,40 @@ const TCG = () => {
     },
     {
       field: "from_number",
-      headerName: "From Number",
-      flex: 1,
-    },
-    {
-      field: "dest_number",
-      headerName: "Dest. Number",
-      flex: 1,
-    },
-    {
-      field: "context",
-      headerName: "Context",
-      flex: 1,
-    },
-    {
-      field: "cli",
       headerName: "CLI",
       flex: 1,
     },
     {
+      field: "dest_number",
+      headerName: "CLD",
+      flex: 1,
+    },
+    {
+      field: "cli",
+      headerName: "Received CLI",
+      flex: 1,
+    },
+    {
       field: "received_timestamp",
-      headerName: "Received Timestamp",
+      headerName: "Detected Time",
       flex: 1,
       type: "dateTime",
       valueFormatter: (params) => new Date(params?.value).toISOString(),
       filterOperators: quantityOnlyOperators,
     },
     {
-      field: "exten_timestamp",
-      headerName: "Exten Timestamp",
-      flex: 1,
-      type: "dateTime",
-      valueFormatter: (params) => {
-        return new Date(params?.value).toISOString();
-      },
-    },
-    {
       field: "timestamp",
-      headerName: "Timestamp",
+      headerName: "Call Start Time",
       flex: 1,
       type: "dateTime",
       valueFormatter: (params) => new Date(params?.value).toISOString(),
+      filterOperators: quantityOnlyOperators,
     },
+    // {
+    //   field: "duration",
+    //   headerName: "Duration",
+    //   flex: 1,
+    // },
     {
       field: "fraud_type",
       headerName: "Fraud Type",
