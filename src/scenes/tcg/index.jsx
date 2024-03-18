@@ -13,12 +13,9 @@ import {
   useGridRootProps,
   GridToolbarContainer,
 } from "@mui/x-data-grid";
-import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import dayjs from "dayjs";
 import { Formik, Form } from "formik";
 import * as yup from "yup";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import SyncIcon from "@mui/icons-material/Sync";
 import TextField from "@mui/material/TextField";
 import { tokens } from "../../theme";
@@ -27,6 +24,7 @@ import { useEffect, useState, useRef } from "react";
 import { getOrdersApi } from "../../state/api/orders/orders";
 import { getReceivedCallsApi } from "../../state/api/tcg/receivedCalls";
 import { useAuthContext } from "../../hooks/useAuthContext";
+import InputDatetimeRange from "../../components/filters/InputDatetimeRange";
 
 const TCG = () => {
   const theme = useTheme();
@@ -40,6 +38,7 @@ const TCG = () => {
   // const [endDate, setEndDate] = useState(null);
   const [report, setReport] = useState({ is_xlsx: false, email: null });
   const [open, setOpen] = useState(false);
+  const [pressedBtn, setPressedBtn] = useState(false);
 
   const authContext = useAuthContext();
 
@@ -50,14 +49,15 @@ const TCG = () => {
 
   const [filterModel, setFilterModel] = useState({
     items: [
-      {
-        id: 1,
-        field: "received_timestamp",
-        value: [null, dayjs().toISOString()],
-        operator: "between",
-      },
+      // {
+      //   id: 1,
+      //   field: "received_timestamp",
+      //   value: [null, dayjs().toISOString()],
+      //   operator: "between",
+      // },
     ],
   });
+  // const [filterModel, setFilterModel] = useState(null);
 
   const editToolbar = function () {
     return (
@@ -78,12 +78,11 @@ const TCG = () => {
 
   useEffect(() => {
     async function fetchReceivedCalls() {
-      let currentUser = JSON.parse(localStorage.getItem("user"));
       setIsLoading(true);
       const { user } = authContext;
       const response = await getReceivedCallsApi({
         token: user.token,
-        filterModel: filterModel,
+        // filterModel: filterModel,
         paginationModel: paginationModel,
         report: { is_xlsx: false, email: null },
       });
@@ -94,152 +93,78 @@ const TCG = () => {
     }
 
     fetchReceivedCalls();
-  }, [
-    paginationModel,
-    setPaginationModel,
-    filterModel,
-    setFilterModel,
-    // report,
-    // setReport,
-  ]);
+  }, [paginationModel, filterModel]);
 
-  function InputNumberInterval(props) {
-    const rootProps = useGridRootProps();
-    const { item, applyValue, focusElementRef = null } = props;
-
-    const filterTimeout = useRef();
-    const [filterValueState, setFilterValueState] = useState(item.value ?? "");
-
-    useEffect(() => {
-      return () => {
-        clearTimeout(filterTimeout.current);
-      };
-    }, []);
-
-    useEffect(() => {
-      const itemValue = item.value ?? [undefined, undefined];
-      setFilterValueState(itemValue);
-    }, [item.value]);
-
-    const updateFilterValue = (lowerBound, upperBound) => {
-      clearTimeout(filterTimeout.current);
-      setFilterValueState([lowerBound, upperBound]);
-      setFilterModel({
-        items: [
-          {
-            id: 1,
-            field: "received_timestamp",
-            value: [
-              dayjs(lowerBound).toISOString(),
-              dayjs(upperBound).toISOString(),
-              // filterItem.value[1],
-            ],
-            operator: "between",
-          },
-        ],
-      });
-    };
-
-    const handleUpperFilterChange = (value) => {
-      // console.log("value", value);
-      const newUpperBound = value;
-      updateFilterValue(filterValueState[0], newUpperBound);
-    };
-    const handleLowerFilterChange = (value) => {
-      const newLowerBound = value;
-      updateFilterValue(newLowerBound, filterValueState[1]);
-    };
-
-    return (
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <Box
-          sx={{
-            display: "inline-flex",
-            flexDirection: "row",
-            alignItems: "end",
-            height: 60,
-            width: "500px",
-            pl: "20px",
-          }}
-        >
-          <DateTimePicker
-            label="From"
-            value={dayjs(filterValueState[0])}
-            onChange={handleLowerFilterChange}
-            sx={{ mr: 2, width: "200px" }}
-          />
-          <DateTimePicker
-            label="To"
-            value={dayjs(filterValueState[1])}
-            onChange={handleUpperFilterChange}
-            sx={{ width: "200px" }}
-          />
-        </Box>
-      </LocalizationProvider>
-    );
-  }
-
-  const quantityOnlyOperators = [
+  const timestampOnlyOperators = [
     {
-      label: "Between",
-      value: "between",
+      label: "is",
+      value: "is",
       getApplyFilterFn: (filterItem) => {
-        if (!Array.isArray(filterItem.value) || filterItem.value.length !== 2) {
-          return null;
-        }
-        if (filterItem.value[0] == null || filterItem.value[1] == null) {
-          return null;
-        }
+        // if (!Array.isArray(filterItem.value[0]) || filterItem.value.length !== 2) {
+        // return null;
+        // }
+        // if (filterItem.value[0] == null || filterItem.value[1] == null) {
+        // return null;
+        // }
 
-        // setFilterModel = {
-        //   items: [
-        //     {
-        //       id: 1,
-        //       field: "received_timestamp",
-        //       value: [
-        //         // filterItem.value[0].toISOString(),
-        //         // filterItem.value[0],
-        //         // filterItem.value[1],
-        //       ],
-        //       operator: "between",
-        //     },
-        //   ],
-        // };
-
+        console.log("filterItem", filterItem);
         return ({ value }) => {
-          return (
-            value !== null &&
-            filterItem.value[0] <= value &&
-            value <= filterItem.value[1]
-          );
+          return value !== null && filterItem.value <= value;
         };
       },
-      InputComponent: InputNumberInterval,
+      InputComponent: InputDatetimeRange,
     },
   ];
 
+  const handleFilterModelChange = (newModel) => {
+    // Update the filter model state
+    const existingIndex = filterModel.items.findIndex(
+      (item) => item.field === newModel.field
+    );
+
+    if (existingIndex !== -1) {
+      setFilterModel((prevModel) => {
+        const updatedItems = [...prevModel.items];
+        updatedItems[existingIndex] = newModel;
+        return { ...prevModel, items: updatedItems };
+      });
+    } else {
+      setFilterModel((prevModel) => ({
+        // ...prevModel,
+        items: [...prevModel.items, newModel],
+      }));
+    }
+  };
+
   const handleFormSubmit = async (values) => {
-    setReport({
-      is_xlsx: true,
-      email: values.email,
-    });
+    if (pressedBtn === "downloadBtn") {
+      setReport({
+        is_xlsx: true,
+        email: null,
+      });
+    } else {
+      setReport({
+        is_xlsx: true,
+        email: values.email,
+      });
+    }
 
     setIsLoading(true);
     const { user } = authContext;
 
     const response = await getReceivedCallsApi({
       token: user.token,
-      filterModel: filterModel,
+      // filterModel: filterModel,
       paginationModel: paginationModel,
       report: {
         is_xlsx: true,
-        email: values.email,
+        email: pressedBtn === "downloadBtn" ? null : values.email,
       },
       // perPage,
     });
 
-    setReceivedCalls(response.data);
-    setRowCountState(response.total);
+    // setReceivedCalls(response.data);
+    // setRowCountState(response.total);
     setIsLoading(false);
 
     values.email = "";
@@ -263,7 +188,7 @@ const TCG = () => {
     },
     {
       field: "from_number",
-      headerName: "CLI",
+      headerName: "Received CLI",
       flex: 1,
     },
     {
@@ -273,8 +198,9 @@ const TCG = () => {
     },
     {
       field: "cli",
-      headerName: "Received CLI",
+      headerName: "CLI",
       flex: 1,
+      filterable: false,
     },
     {
       field: "received_timestamp",
@@ -282,7 +208,11 @@ const TCG = () => {
       flex: 1,
       type: "dateTime",
       valueFormatter: (params) => new Date(params?.value).toISOString(),
-      filterOperators: quantityOnlyOperators,
+      filterable: false,
+      // filterOperators: timestampOnlyOperators,
+      // filterOperators: getGridBooleanOperators().filter(
+      //   (operator) => operator.value === "equals"
+      // ),
     },
     {
       field: "timestamp",
@@ -290,13 +220,15 @@ const TCG = () => {
       flex: 1,
       type: "dateTime",
       valueFormatter: (params) => new Date(params?.value).toISOString(),
-      filterOperators: quantityOnlyOperators,
+      filterable: false,
+      // value: (params) => new Date(params?.value),
+      // filterOperators: timestampOnlyOperators,
     },
-    {
-      field: "duration",
-      headerName: "Duration",
-      flex: 1,
-    },
+    // {
+    //   field: "duration",
+    //   headerName: "Duration",
+    //   flex: 1,
+    // },
     {
       field: "fraud_type",
       headerName: "Fraud Type",
@@ -334,7 +266,13 @@ const TCG = () => {
               handleChange,
               handleSubmit,
             }) => (
-              <Form onSubmit={handleSubmit}>
+              <Form
+                onSubmit={(...props) => {
+                  // console.log("event", props[0].nativeEvent.submitter.name);
+                  setPressedBtn(props[0].nativeEvent.submitter.name);
+                  handleSubmit(...props);
+                }}
+              >
                 <Box
                   display="grid"
                   gap="30px"
@@ -376,8 +314,18 @@ const TCG = () => {
                     type="submit"
                     color="secondary"
                     variant="contained"
+                    name="emailBtn"
                   >
-                    Create
+                    Send to email
+                  </Button>
+                  <Button
+                    type="submit"
+                    color="secondary"
+                    variant="contained"
+                    name="downloadBtn"
+                    sx={{ ml: "5px" }}
+                  >
+                    Download
                   </Button>
                 </Box>
               </Form>
@@ -413,19 +361,20 @@ const TCG = () => {
       <Box m="40px 0 0 0" height="75vh">
         <DataGrid
           paginationMode="server"
+          // filterMode="server"
           rowCount={rowCountState}
           rows={receivedCalls}
           columns={columns}
           paginationModel={paginationModel}
           onPaginationModelChange={setPaginationModel}
           loading={isLoading}
-          filterModel={filterModel}
-          // onFilterModelChange={(model) => setFilterModel(model)}
-          onFilterModelChange={setFilterModel}
+          // filterModel={filterModel}
+          // onFilterModelChange={(newModel) => handleFilterModelChange(newModel)}
           slots={{
             toolbar: editToolbar,
           }}
           pagintaion
+          filter
           // filter
         />
       </Box>
@@ -440,5 +389,5 @@ const initialValues = {
 };
 
 const emailSchema = yup.object().shape({
-  email: yup.string().email().required("required"),
+  email: yup.string().email(),
 });
