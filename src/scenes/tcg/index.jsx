@@ -1,238 +1,183 @@
-import {
-  Box,
-  Button,
-  useTheme,
-  Modal,
-  Typography,
-  Grid,
-  List,
-  ListItem,
-} from "@mui/material";
-import {
-  DataGrid,
-  useGridRootProps,
-  GridToolbarContainer,
-} from "@mui/x-data-grid";
+import { Box, Button, useTheme, Modal, Typography } from "@mui/material";
 import dayjs from "dayjs";
 import { Formik, Form } from "formik";
 import * as yup from "yup";
-import SyncIcon from "@mui/icons-material/Sync";
 import TextField from "@mui/material/TextField";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
 import { useEffect, useState, useRef } from "react";
-import { getOrdersApi } from "../../state/api/orders/orders";
 import { getReceivedCallsApi } from "../../state/api/tcg/receivedCalls";
 import { useAuthContext } from "../../hooks/useAuthContext";
-import InputDatetimeRange from "../../components/filters/InputDatetimeRange";
+import SimpleTable from "../../components/CustomTable";
+import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { getCountriesApi } from "../../state/api/carriers/countries";
+import { getCarriersApi } from "../../state/api/carriers/carriers";
 
 const TCG = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
   const [isLoading, setIsLoading] = useState(false);
+
+  const [countries, setCountries] = useState([{ id: "", name: "" }]);
+  const [carriers, setCarriers] = useState([]);
+
   const [receivedCalls, setReceivedCalls] = useState([]);
   const [rowCountState, setRowCountState] = useState(10);
 
-  // const [startDate, setStartDate] = useState(null);
-  // const [endDate, setEndDate] = useState(null);
-  const [report, setReport] = useState({ is_xlsx: false, email: null });
+  const [startDate, setStartDate] = useState(
+    dayjs().subtract(1, "day").toDate().toISOString()
+  );
+  const [endDate, setEndDate] = useState(new Date().toISOString());
+
   const [open, setOpen] = useState(false);
   const [pressedBtn, setPressedBtn] = useState(false);
 
   const authContext = useAuthContext();
 
   const [paginationModel, setPaginationModel] = useState({
-    pageSize: 50,
+    pageSize: 18,
     page: 0,
+    count: 10,
   });
 
-  const [filterModel, setFilterModel] = useState({
-    items: [
-      // {
-      //   id: 1,
-      //   field: "received_timestamp",
-      //   value: [null, dayjs().toISOString()],
-      //   operator: "between",
-      // },
-    ],
-  });
-  // const [filterModel, setFilterModel] = useState(null);
+  const [filters, setFilters] = useState({});
 
-  const editToolbar = function () {
-    return (
-      <GridToolbarContainer
-        sx={{ display: "flex", justifyContent: "end", m: "5px" }}
-      >
-        <Button
-          type="submit"
-          color="secondary"
-          variant="contained"
-          onClick={() => setOpen(true)}
-        >
-          Export
-        </Button>
-      </GridToolbarContainer>
-    );
-  };
+  async function fetchReceivedCalls(is_xlsx = false, email = null) {
+    setIsLoading(true);
+    const { user } = authContext;
+    const response = await getReceivedCallsApi({
+      token: user.token,
 
-  useEffect(() => {
-    async function fetchReceivedCalls() {
-      setIsLoading(true);
-      const { user } = authContext;
-      const response = await getReceivedCallsApi({
-        token: user.token,
-        // filterModel: filterModel,
-        paginationModel: paginationModel,
-        report: { is_xlsx: false, email: null },
-      });
+      start_date: startDate,
+      endDate: endDate,
+      // pagination
+      page: paginationModel.page,
+      per_page: paginationModel.pageSize,
+      // report
+      is_xlsx: is_xlsx,
+      email: email,
+      // filters
+      ...filters,
+    });
 
+    if (response) {
       setReceivedCalls(response.data);
       setRowCountState(response.total);
-      setIsLoading(false);
     }
 
+    setIsLoading(false);
+  }
+
+  useEffect(() => {
+    const fetchCountries = async () => {
+      try {
+        const countries = await getCountriesApi();
+
+        setCountries(countries);
+      } catch (error) {
+        console.error("Error fetching countries:", error);
+      }
+    };
+
+    fetchCountries();
+  }, []);
+
+  useEffect(() => {
+    async function fetchCarriers() {
+      const user = JSON.parse(localStorage.getItem("user"));
+
+      const carriers = await getCarriersApi(user.token);
+
+      setCarriers(carriers);
+    }
+
+    fetchCarriers();
+  }, []);
+
+  useEffect(() => {
     fetchReceivedCalls();
-  }, [paginationModel, filterModel]);
+  }, [paginationModel, filters]);
 
-  const timestampOnlyOperators = [
-    {
-      label: "is",
-      value: "is",
-      getApplyFilterFn: (filterItem) => {
-        // if (!Array.isArray(filterItem.value[0]) || filterItem.value.length !== 2) {
-        // return null;
-        // }
-        // if (filterItem.value[0] == null || filterItem.value[1] == null) {
-        // return null;
-        // }
+  const handleFilterModelChange = (newFilters) => {
+    setFilters((filters) => ({
+      ...filters,
+      ...newFilters,
+    }));
+  };
 
-        console.log("filterItem", filterItem);
-        return ({ value }) => {
-          return value !== null && filterItem.value <= value;
-        };
-      },
-      InputComponent: InputDatetimeRange,
-    },
-  ];
-
-  const handleFilterModelChange = (newModel) => {
-    // Update the filter model state
-    const existingIndex = filterModel.items.findIndex(
-      (item) => item.field === newModel.field
-    );
-
-    if (existingIndex !== -1) {
-      setFilterModel((prevModel) => {
-        const updatedItems = [...prevModel.items];
-        updatedItems[existingIndex] = newModel;
-        return { ...prevModel, items: updatedItems };
-      });
-    } else {
-      setFilterModel((prevModel) => ({
-        // ...prevModel,
-        items: [...prevModel.items, newModel],
-      }));
-    }
+  const handleDateTimeChange = () => {
+    setFilters((filters) => ({
+      ...filters,
+      start_date: startDate,
+      end_date: endDate,
+    }));
   };
 
   const handleFormSubmit = async (values) => {
-    if (pressedBtn === "downloadBtn") {
-      setReport({
-        is_xlsx: true,
-        email: null,
-      });
-    } else {
-      setReport({
-        is_xlsx: true,
-        email: values.email,
-      });
-    }
-
-    setIsLoading(true);
-    const { user } = authContext;
-
-    const response = await getReceivedCallsApi({
-      token: user.token,
-      // filterModel: filterModel,
-      paginationModel: paginationModel,
-      report: {
-        is_xlsx: true,
-        email: pressedBtn === "downloadBtn" ? null : values.email,
-      },
-      // perPage,
-    });
-
-    // setReceivedCalls(response.data);
-    // setRowCountState(response.total);
-    setIsLoading(false);
+    fetchReceivedCalls(
+      true,
+      pressedBtn === "downloadBtn" ? null : values.email
+    );
 
     values.email = "";
     setOpen(false);
-    setReport({
-      is_xlsx: false,
-      email: null,
-    });
   };
 
   const columns = [
     {
       field: "country",
       headerName: "Country",
-      flex: 1,
+      filterType: "select",
+      filterOptions: countries?.map((country_info) => {
+        return { label: country_info.name, value: country_info.name };
+      }),
     },
     {
       field: "carrier",
       headerName: "Carrier",
-      flex: 1,
+      filterType: "select",
+      filterOptions: carriers?.map((carrier_info) => {
+        return { label: carrier_info.name, value: carrier_info.name };
+      }),
     },
     {
       field: "from_number",
       headerName: "Received CLI",
-      flex: 1,
     },
     {
       field: "dest_number",
       headerName: "CLD",
-      flex: 1,
     },
     {
       field: "cli",
       headerName: "CLI",
-      flex: 1,
-      filterable: false,
     },
     {
       field: "received_timestamp",
       headerName: "Detected Time",
-      flex: 1,
       type: "dateTime",
-      valueFormatter: (params) => new Date(params?.value).toISOString(),
       filterable: false,
-      // filterOperators: timestampOnlyOperators,
-      // filterOperators: getGridBooleanOperators().filter(
-      //   (operator) => operator.value === "equals"
-      // ),
     },
     {
       field: "timestamp",
       headerName: "Call Start Time",
-      flex: 1,
       type: "dateTime",
-      valueFormatter: (params) => new Date(params?.value).toISOString(),
       filterable: false,
-      // value: (params) => new Date(params?.value),
-      // filterOperators: timestampOnlyOperators,
     },
-    // {
-    //   field: "duration",
-    //   headerName: "Duration",
-    //   flex: 1,
-    // },
     {
       field: "fraud_type",
       headerName: "Fraud Type",
-      flex: 1,
+      filterType: "select",
+      filterOptions: [
+        { label: "sameCLI", value: "sameCLI" },
+        { label: "noncompletion", value: "noncompletion" },
+        { label: "ONNET", value: "ONNET" },
+        { label: "INTERNATIONAL", value: "INTERNATIONAL" },
+        { label: "OFFNET", value: "OFFNET" },
+        { label: "CLIMATCH", value: "CLIMATCH" },
+      ],
     },
   ];
 
@@ -268,7 +213,6 @@ const TCG = () => {
             }) => (
               <Form
                 onSubmit={(...props) => {
-                  // console.log("event", props[0].nativeEvent.submitter.name);
                   setPressedBtn(props[0].nativeEvent.submitter.name);
                   handleSubmit(...props);
                 }}
@@ -277,11 +221,6 @@ const TCG = () => {
                   display="grid"
                   gap="30px"
                   gridTemplateColumns="repeat(6, minmax(0, 1fr))"
-                  // sx={{
-                  //   "& > div": {
-                  //     gridColumn: isNonMobile ? undefined : "span 6",
-                  //   },
-                  // }}
                   mt="20px"
                 >
                   <TextField
@@ -294,9 +233,7 @@ const TCG = () => {
                     value={values.email}
                     name="email"
                     error={!!touched.email && !!errors.email}
-                    // helperText={touched.name && errors.name}
                     sx={{ gridColumn: "span 3" }}
-                    // InputProps={{ style: { color: getFontColor(values.name) } }}
                   />
                 </Box>
                 <Box display="flex" justifyContent="end" mt="20px">
@@ -331,51 +268,79 @@ const TCG = () => {
               </Form>
             )}
           </Formik>
-
-          {/* <Box display="flex" justifyContent="end" mt="20px">
-            <Button
-              type="button"
-              color="error"
-              variant="outlined"
-              sx={{ mx: "5px" }}
-              onClick={() => setOpen(false)}
-            >
-              Cancel
-            </Button>
-            <Button
-              type="button"
-              color="success"
-              variant="contained"
-              sx={{ mx: "5px" }}
-              onClick={() => {
-                // onConfirm();
-                setOpen(false);
-              }}
-            >
-              Confirm
-            </Button>
-          </Box> */}
         </Box>
       </Modal>
       <Header title="TCG" subtitle="All received calls" />
-      <Box m="40px 0 0 0" height="75vh">
-        <DataGrid
-          paginationMode="server"
-          // filterMode="server"
-          rowCount={rowCountState}
-          rows={receivedCalls}
-          columns={columns}
-          paginationModel={paginationModel}
-          onPaginationModelChange={setPaginationModel}
-          loading={isLoading}
-          // filterModel={filterModel}
-          // onFilterModelChange={(newModel) => handleFilterModelChange(newModel)}
-          slots={{
-            toolbar: editToolbar,
+      <Box sx={{ display: "flex", m: "5px" }}>
+        <Box sx={{ flex: 1 }}>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DateTimePicker
+              value={dayjs(startDate) || filters.start_date}
+              onChange={(newValue) => {
+                setStartDate(newValue.toISOString());
+              }}
+            />
+            <Typography
+              variant="h4"
+              color={colors.grey[700]}
+              sx={{ m: "0 20px", display: "inline-flex" }}
+            >
+              -
+            </Typography>
+            <DateTimePicker
+              value={dayjs(endDate) || filters.end_date}
+              onChange={(newValue) => {
+                setEndDate(newValue.toISOString());
+              }}
+            />
+          </LocalizationProvider>
+          <Button
+            type="submit"
+            color="secondary"
+            variant="contained"
+            onClick={handleDateTimeChange}
+            sx={{ marginLeft: "15px" }}
+          >
+            Submit
+          </Button>
+        </Box>
+        <Box
+          sx={{
+            justifyContent: "end",
+            display: "flex",
+            alignItems: "flex-end",
+            m: "5px",
           }}
-          pagintaion
-          filter
+        >
+          <Button
+            type="submit"
+            color="secondary"
+            variant="contained"
+            onClick={() => setOpen(true)}
+          >
+            Export
+          </Button>
+        </Box>
+      </Box>
+      {/* <Box m="40px 0 0 0" height="60vh"> */}
+      <Box
+        sx={{
+          height: "100%",
+          display: "flex",
+          alignItems: "center",
+          margin: "40px 0 0 0",
+        }}
+      >
+        <SimpleTable
+          data={receivedCalls}
+          columns={columns}
           // filter
+          filters={filters}
+          onFilterChange={(newFilters) => handleFilterModelChange(newFilters)}
+          // pagination
+          pagination={paginationModel}
+          setPagination={setPaginationModel}
+          rowCount={rowCountState}
         />
       </Box>
     </Box>
