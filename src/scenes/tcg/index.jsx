@@ -171,7 +171,6 @@ const TCG = () => {
       headerName: "Fraud Type",
       filterType: "multipleSelect",
       filterOptions: [
-        { label: "sameCLI", value: "sameCLI" },
         { label: "noncompletion", value: "noncompletion" },
         { label: "ONNET", value: "ONNET" },
         { label: "INTERNATIONAL", value: "INTERNATIONAL" },
