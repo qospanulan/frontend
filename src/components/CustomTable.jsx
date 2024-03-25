@@ -16,6 +16,9 @@ import {
   Select,
   InputAdornment,
   ListSubheader,
+  ListItemText,
+  Checkbox,
+  Chip,
 } from "@mui/material";
 import { Search as SearchIcon, Clear as ClearIcon } from "@mui/icons-material";
 import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
@@ -37,9 +40,9 @@ const SimpleTable = ({
   const emptyRows =
     pagination.page > 0
       ? Math.max(3, (1 + pagination.page) * pagination.pageSize - rowCount)
-      : rowCount > 3
+      : rowCount > 5
       ? 0
-      : 3;
+      : 5;
 
   const [activeFilterField, setActiveFilterField] = useState({
     field: null,
@@ -69,8 +72,8 @@ const SimpleTable = ({
   const handleFilterIconClick = (field, value) => {
     setActiveFilterField(
       activeFilterField.field === field
-        ? { field: null, value: "" }
-        : { field: field, value: "" }
+        ? { field: null, value: value }
+        : { field: field, value: value }
     );
   };
 
@@ -194,7 +197,6 @@ const SimpleTable = ({
                           <ListSubheader>
                             <TextField
                               size="small"
-                              // Autofocus on textfield
                               autoFocus
                               placeholder="Type to search..."
                               fullWidth
@@ -208,7 +210,6 @@ const SimpleTable = ({
                               onChange={(e) => setSearchText(e.target.value)}
                               onKeyDown={(e) => {
                                 if (e.key !== "Escape") {
-                                  // Prevents autoselecting item while typing (default Select behaviour)
                                   e.stopPropagation();
                                 }
                               }}
@@ -228,7 +229,118 @@ const SimpleTable = ({
                             ))}
                         </Select>
                       )}
-
+                      {/* Multiple select */}
+                      {column.filterType === "multipleSelect" && (
+                        <Select
+                          fullWidth
+                          multiple
+                          MenuProps={{ autoFocus: false }}
+                          labelId="search-select-label"
+                          id="search-select"
+                          value={
+                            activeFilterField?.value ||
+                            filterValues[column?.field] ||
+                            []
+                          }
+                          label="Options"
+                          onChange={(e) => {
+                            handleFilterChange(column.field, []);
+                            setActiveFilterField({
+                              field: column.field,
+                              value: e.target.value,
+                            });
+                          }}
+                          onClose={() => setSearchText("")}
+                          // renderValue={(selected) => selected.join(", ")}
+                          renderValue={(selected) => (
+                            <Box sx={{ display: "flex", flexWrap: "wrap" }}>
+                              {selected.map((value) => (
+                                <Chip
+                                  key={value}
+                                  label={value}
+                                  onDelete={() => {
+                                    const selectedValues = filterValues[
+                                      column.field
+                                    ].filter((item) => item !== value);
+                                    handleFilterChange(
+                                      column.field,
+                                      selectedValues
+                                    );
+                                    setActiveFilterField({
+                                      field: column.field,
+                                      value: selectedValues,
+                                    });
+                                  }}
+                                />
+                              ))}
+                            </Box>
+                          )}
+                        >
+                          <ListSubheader>
+                            <TextField
+                              size="small"
+                              autoFocus
+                              placeholder="Type to search..."
+                              fullWidth
+                              InputProps={{
+                                startAdornment: (
+                                  <InputAdornment position="start">
+                                    <SearchIcon />
+                                  </InputAdornment>
+                                ),
+                              }}
+                              onChange={(e) => setSearchText(e.target.value)}
+                              onKeyDown={(e) => {
+                                if (e.key !== "Escape") {
+                                  e.stopPropagation();
+                                }
+                              }}
+                            />
+                          </ListSubheader>
+                          {/* <MenuItem value="">All</MenuItem> */}
+                          {column.filterOptions
+                            .filter((option) =>
+                              option.value
+                                .toLowerCase()
+                                .includes(searchText.toLowerCase())
+                            )
+                            .map((option, index) => (
+                              <MenuItem key={index} value={option.value}>
+                                {/* {option.label} */}
+                                <Checkbox
+                                  checked={
+                                    filterValues[column.field] &&
+                                    filterValues[column.field].includes(
+                                      option.value
+                                    )
+                                  }
+                                  onChange={(e) => {
+                                    const selectedValues = e.target.checked
+                                      ? filterValues[column.field] &&
+                                        filterValues[column.field].length > 0
+                                        ? [
+                                            ...filterValues[column.field],
+                                            option.value,
+                                          ]
+                                        : [option.value]
+                                      : filterValues[column.field].filter(
+                                          (value) => value !== option.value
+                                        );
+                                    handleFilterChange(
+                                      column.field,
+                                      selectedValues
+                                    );
+                                    setActiveFilterField({
+                                      field: column.field,
+                                      value: selectedValues,
+                                    });
+                                  }}
+                                />
+                                <ListItemText primary={option.label} />
+                              </MenuItem>
+                            ))}
+                        </Select>
+                      )}
                       <Button
                         variant="contained"
                         size="small"

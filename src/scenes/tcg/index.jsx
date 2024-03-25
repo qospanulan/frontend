@@ -129,7 +129,7 @@ const TCG = () => {
     {
       field: "country",
       headerName: "Country",
-      filterType: "select",
+      filterType: "multipleSelect",
       filterOptions: countries?.map((country_info) => {
         return { label: country_info.name, value: country_info.name };
       }),
@@ -137,7 +137,7 @@ const TCG = () => {
     {
       field: "carrier",
       headerName: "Carrier",
-      filterType: "select",
+      filterType: "multipleSelect",
       filterOptions: carriers?.map((carrier_info) => {
         return { label: carrier_info.name, value: carrier_info.name };
       }),
@@ -169,7 +169,7 @@ const TCG = () => {
     {
       field: "fraud_type",
       headerName: "Fraud Type",
-      filterType: "select",
+      filterType: "multipleSelect",
       filterOptions: [
         { label: "sameCLI", value: "sameCLI" },
         { label: "noncompletion", value: "noncompletion" },

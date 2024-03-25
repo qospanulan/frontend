@@ -3,10 +3,9 @@ const BASE_URL = process.env.REACT_APP_API_URL;
 export const getReceivedCallsApi = async ({ token, ...params }) => {
   try {
     const queryParams = Object.entries(params)
-      .map(
-        ([key, value]) =>
-          `${encodeURIComponent(key)}=${encodeURIComponent(value)}`
-      )
+      .map(([key, value]) => {
+        return `${encodeURIComponent(key)}=${encodeURIComponent(value)}`;
+      })
       .join("&");
 
     const response = await fetch(`${BASE_URL}/received-calls/?${queryParams}`, {
