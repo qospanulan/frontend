@@ -40,6 +40,7 @@ import {
 } from "../../state/api/orders/bnumberGroups";
 import Confirm from "../../components/Confirm";
 import Detail from "../../components/Detail";
+import { useAuthContext } from "../../hooks/useAuthContext";
 
 const CreateBnumberGroup = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
@@ -62,14 +63,18 @@ const CreateBnumberGroup = () => {
 
   const hiddenFileInput = useRef(null);
 
+  const authContext = useAuthContext();
+
   const handleClick = (event) => {
     hiddenFileInput.current.click();
   };
 
   useEffect(() => {
     async function fetchBnumberGroups() {
+      const { user } = authContext;
+
       setLoading(true);
-      const bnumberGroups = await getBnumberGroupsApi();
+      const bnumberGroups = await getBnumberGroupsApi(user.token);
 
       setBnumberGroups(bnumberGroups);
       setLoading(false);
@@ -79,7 +84,7 @@ const CreateBnumberGroup = () => {
   }, []);
 
   const handleGettingBnumbers = async (id) => {
-    const user = JSON.parse(localStorage.getItem("user"));
+    const { user } = authContext;
 
     const response = await getBnumberGroupNumbersApi(user.token, id);
     if (response) {
@@ -110,7 +115,8 @@ const CreateBnumberGroup = () => {
   };
 
   const handleFormSubmit = async (values) => {
-    const token = localStorage.getItem("token");
+    const { user } = authContext;
+
     if (!selectedFile) {
       return;
     }
@@ -120,7 +126,7 @@ const CreateBnumberGroup = () => {
 
     formData.append("name", values.name);
 
-    const newBnumberGroup = await createBnumberGroupApi(formData);
+    const newBnumberGroup = await createBnumberGroupApi(formData, user.token);
     setSelectedFile(null);
     if (newBnumberGroup) {
       toast.success("Bnumber group created");
@@ -147,7 +153,7 @@ const CreateBnumberGroup = () => {
   };
 
   const handleDeleteClick = (id) => async () => {
-    const user = JSON.parse(localStorage.getItem("user"));
+    const { user } = authContext;
 
     const response = await deleteBnumberGroupsApi(id, user.token);
     if (response) {

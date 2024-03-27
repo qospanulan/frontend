@@ -104,23 +104,18 @@ export const deleteBnumberGroupsApi = async (id, token) => {
   }
 };
 
-// Dont work
-export const createBnumberGroupApi = async (newBnumberGroup) => {
+export const createBnumberGroupApi = async (newBnumberGroup, token) => {
   try {
     const response = await fetch(`${BASE_URL}/bnumber-groups/`, {
       method: "POST",
-      // headers: {
-      // "Content-Type": "application/json",
-      // Authorization: `Bearer ${token}`,
-      // },
-      // body: JSON.stringify(newBnumberGroup),
+      headers: {
+        // "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
       body: newBnumberGroup,
     });
 
     if (!response.ok) {
-      // throw new Error(
-      //   "Network response was not ok:" + JSON.stringify(response.statusText)
-      // );
       return false;
     }
 
