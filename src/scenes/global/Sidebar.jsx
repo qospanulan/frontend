@@ -120,6 +120,13 @@ const Sidebar = () => {
                   selected={selected}
                   setSelected={setSelected}
                 />
+                <Item
+                  title="Summary"
+                  to="/consolidated-report"
+                  icon={<CallOutlinedIcon />}
+                  selected={selected}
+                  setSelected={setSelected}
+                />
               </SubMenu>
               <Typography
                 variant="h6"
